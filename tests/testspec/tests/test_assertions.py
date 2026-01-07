@@ -1,59 +1,10 @@
 import logging
-import os
-import sys
 from dataclasses import dataclass
-from pathlib import Path
 from typing import Any
 
 import pytest
-from dotenv import load_dotenv
 
 log = logging.getLogger(__name__)
-
-# Automatically adjust sys.path to include src/ and tests/ directories for imports if needed.
-# This lets us run the tests in this one file directly without first installing the package,
-# depending on PYTHONPATH, or requiring a specific invocation of pytest to set up the import paths.
-load_dotenv()
-repo_markers = {
-    'pyproject.toml': 'file',
-    '.git': 'dir',
-    '.hg': 'dir',
-}
-warn_on_mismatched_env_and_sep: bool = True
-posix_pathsep = ':'
-nt_pathsep = ';'
-pathsep = os.pathsep
-if warn_on_mismatched_env_and_sep:
-    if os.name == 'nt' and posix_pathsep in os.getenv('PYTHONPATH', ''):
-        log.warning("Detected POSIX-style path separator ':' in PYTHONPATH on Windows platform.")
-    elif os.name != 'nt' and nt_pathsep in os.getenv('PYTHONPATH', ''):
-        log.warning("Detected Windows-style path separator ';' in PYTHONPATH on POSIX platform.")
-
-python_path_str = os.getenv('PYTHONPATH', '').strip()
-subdirs_to_add = []
-if python_path_str:
-    log.debug("PYTHONPATH from environment: %s", python_path_str)
-    normalized_path = python_path_str.replace(posix_pathsep, os.pathsep).replace(nt_pathsep, os.pathsep)
-    subdirs_to_add = [p for p in normalized_path.split(os.pathsep) if p]
-
-if subdirs_to_add:
-    repo_root = Path(__file__).parent
-    while not any((repo_root / marker).exists() if typ == 'file' else (repo_root / marker).is_dir()
-                  for marker, typ in repo_markers.items()) and repo_root != repo_root.parent:
-        repo_root = repo_root.parent
-    if repo_root != repo_root.parent:
-        for subdir in subdirs_to_add:
-            subdir = Path(subdir.strip())
-            candidate = repo_root / subdir
-            if candidate.exists() and candidate.is_dir():
-                if str(candidate) not in sys.path:
-                    sys.path.insert(0, str(candidate))
-            else:
-                log.warning("Could not find expected subdirectory for imports: %s", candidate)
-    else:
-        log.warning("Could not find repository root for imports starting from: %s", Path(__file__))
-else:
-    log.warning("PYTHONPATH not set, imports may not work as expected.")
 
 from testspec import Assert, TestSpec, idspec
 from testspec.assertions import validate_assertion
