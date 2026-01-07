@@ -121,6 +121,9 @@ commands = [
     ["mypy", "src", "tests"],
 ]
 
+[tool.mypy]
+exclude = ["venv"]
+
 [tool.tox.env.docs]
 # This environment is self-contained and does NOT inherit from basetest.
 description = "Build the documentation"
