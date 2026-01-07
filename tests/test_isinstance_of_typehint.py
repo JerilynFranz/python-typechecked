@@ -2,10 +2,8 @@
 # pylint: disable=import-error,wrong-import-position,unused-import
 import enum
 import logging
-import os
 import sys
 from collections.abc import Collection, Hashable, Iterable, Mapping, Sequence, Set
-from pathlib import Path
 from types import MappingProxyType
 from typing import (
     Annotated,
@@ -48,7 +46,6 @@ log = logging.getLogger(__name__)
 from testspec import Assert, TestAction, TestSpec, idspec
 
 from typechecked import clear_typechecked_cache, isinstance_of_typehint
-from typechecked._primitives import ImmutablePrimitiveTypes, ImmutablePrimitiveTypesTuple
 
 
 @pytest.mark.parametrize('typespec', [

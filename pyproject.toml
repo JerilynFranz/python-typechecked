@@ -231,6 +231,11 @@ norecursedirs = ".git .tox .vscode venv* .*_cache build dist testplan.py"
 [tool.coverage.run]
 branch = true
 source = ["typechecked"]
+omit = [
+    "tests/*",
+    "bootstrap.py",
+    "test_plan.py"
+]
 
 [tool.coverage.report]
 # Regexes for lines to exclude from consideration

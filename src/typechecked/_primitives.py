@@ -16,7 +16,7 @@ ImmutablePrimitiveTypes: TypeAlias = int | str | bytes | bool | float | complex 
 """Type alias for primitive data types."""
 
 ImmutablePrimitiveTypesTuple: tuple[type[int] | type[str] | type[bytes]  # pylint: disable=invalid-name
-        | type[bool] | type[float] | type[complex] | type[NoneType], ...] = (
+        | type[bool] | type[float] | type[complex] | type[None], ...] = (
             int, str, bytes, bool, float, complex, NoneType)
 """Tuple of primitive data types for isinstance checks."""
 

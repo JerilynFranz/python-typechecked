@@ -9,6 +9,14 @@ from .._log import log
 from ._error_tags import ImmutableErrorTag
 from ._protocol import Immutable, ImmutableTypedDict
 
+__all__ = (
+    "validate_immutable",
+    "is_immutable",
+    "is_immutable_typeddict_typehint",
+    "is_immutable_data_typehint",
+    "Immutable",
+    "ImmutableTypedDict",
+)
 
 class NoAttrSentinel:
     """Sentinel class to represent absence of an attribute."""
