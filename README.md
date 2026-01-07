@@ -1,2 +1,5 @@
-# python-istypehint
-A comprehensive runtime type hint checker
+============
+typedchecked
+============
+
+A comprehensive Python runtime type hint checker
