@@ -741,7 +741,7 @@ def _install_hg_hooks(repo_root: Path, forced: bool) -> None:
 
                         # A hook entry
                         elif '=' in line:
-                            hook_name, hook_file = line.split('=', 1)
+                            hook_name, _ = line.split('=', 1)
                             hook_name = hook_name.strip()
                             if hook_name in hook_names:
                                 hook_names.remove(hook_name)
