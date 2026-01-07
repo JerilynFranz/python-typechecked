@@ -23,7 +23,6 @@ from typing import (
 
 import pytest
 
-
 if sys.version_info >= (3, 11):
     from typing import Never, NotRequired, ReadOnly, Required
 else:
