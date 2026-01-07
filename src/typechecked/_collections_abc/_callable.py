@@ -3,11 +3,10 @@ import inspect
 from collections.abc import Callable
 from typing import Any
 
-from .._exceptions import TypeCheckedTypeError, TypeCheckedValueError
-
 from .._check_result import CheckResult
 from .._constants import IS_VALID, NOT_IMMUTABLE, NOT_VALID
 from .._error_tags import TypeHintsErrorTag
+from .._exceptions import TypeCheckedTypeError, TypeCheckedValueError
 from .._log import log
 
 __all__ = (
@@ -36,7 +35,7 @@ def _check_collections_abc_callable(
     log.debug(
         "_container_check_callable: Checking object of type '%s' against Callable type hint '%s'",
         type(obj).__name__, type_hint)
-    if not issubclass(origin, Callable):
+    if not issubclass(origin, Callable):  # type: ignore[arg-type]
         raise TypeCheckedValueError(
             f"Type hint '{type_hint}' is not a Callable.",
             tag=TypeHintsErrorTag.INVALID_TYPE_HINT)

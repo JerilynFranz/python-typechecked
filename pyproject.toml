@@ -105,7 +105,7 @@ description = "Development environment with all tools"
 package = "editable"
 dependency_groups = ["test", "tools", "lint"]
 base = ["testenv"]
-base_python = ["python3.10", "python3.11", "python3.12", "python3.13", "python3.14"]
+base_python = ["python3.12", "python3.11", "python3.12", "python3.13", "python3.14"]
 allowlist_externals = ["pytest", "mypy", "flake8", "pylint"]
 
 commands = []

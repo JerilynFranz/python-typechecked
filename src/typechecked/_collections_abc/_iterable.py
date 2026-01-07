@@ -2,13 +2,12 @@
 from collections.abc import Iterable, Iterator
 from typing import Any
 
-from .._exceptions import TypeCheckedTypeError, TypeCheckedValueError
 from .. import Immutable
-
 from .._cache import _CACHE
 from .._check_result import CheckResult
 from .._constants import IS_IMMUTABLE, IS_VALID, NOT_IMMUTABLE, NOT_VALID
 from .._error_tags import TypeHintsErrorTag
+from .._exceptions import TypeCheckedTypeError, TypeCheckedValueError
 from .._log import log
 from .._options import Options
 from .._validation_state import ValidationState
@@ -36,7 +35,7 @@ def _check_collections_abc_iterable(
     :param bool raise_on_error: Whether to raise an exception on validation failure.
     :return CheckResult: Tuple indicating (is_valid, is_immutable).
     :raises TypeCheckedTypeError: If raise_on_error is True and validation fails.
-    :raises SimpleBenchValueError: If origin is not a subclass of Iterable.
+    :raises TypeCheckedValueError: If origin is not a subclass of Iterable.
     """
     from .._type_hints import _check_instance_of_typehint  # pylint: disable=import-outside-toplevel
 
@@ -44,7 +43,7 @@ def _check_collections_abc_iterable(
         "_container_check_iterable: Checking object of type '%s' against Iterable type hint '%s'",
         type(obj).__name__, type_hint)
     if not issubclass(origin, Iterable):
-        raise SimpleBenchValueError(
+        raise TypeCheckedValueError(
             f"Type hint '{type_hint}' is not an Iterable.",
             tag=TypeHintsErrorTag.INVALID_TYPE_HINT)
 

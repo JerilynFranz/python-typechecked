@@ -9,6 +9,9 @@ class TestSpec(ABC):
     # Prevent pytest from trying to collect this class as a test case
     __test__ = False
 
+    _creation_traceback: TracebackType | None = None
+    """The traceback at the point where the TestSpec was created."""
+
     @abstractmethod
     def run(self) -> None:
         """Run the test based on the provided TestSpec entry.

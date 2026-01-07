@@ -21,7 +21,7 @@ else:
         from typing_extensions import Never
     except ImportError as e:
         raise ImportError(
-            "SimpleBench requires 'typing_extensions' for Python < 3.11 "
+            "TypeChecked requires 'typing_extensions' for Python < 3.11 "
             "to support Never.") from e
 
 __all__ = (

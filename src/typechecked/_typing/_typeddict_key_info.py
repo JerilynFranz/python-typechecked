@@ -12,23 +12,33 @@ about a TypedDict key's required/optional/readonly status and its contained type
 import sys
 from typing import get_args, get_origin
 
-from .._exceptions import TypeCheckedTypeError
-
 from .._error_tags import TypedDictKeyInfoErrorTag
+from .._exceptions import TypeCheckedTypeError
 from .._log import log
 
 __all__ = ('TypedDictKeyInfo',)
 
 
 if sys.version_info >= (3, 11):
-    from typing import NotRequired, ReadOnly, Required
+    from typing import NotRequired, Required
 else:
     try:
-        from typing_extensions import NotRequired, ReadOnly, Required
+        from typing_extensions import NotRequired, Required
     except ImportError as e:
         raise ImportError(
-            "SimpleBench requires 'typing_extensions' for Python < 3.11 "
-            "to support Required, NotRequired, ReadOnly.") from e
+            "TypeChecked requires 'typing_extensions' for Python < 3.11 "
+            "to support ReadOnly, Required, NotRequired.") from e
+
+if sys.version_info >= (3, 13):
+    from typing import ReadOnly
+else:
+    try:
+        from typing_extensions import ReadOnly
+    except ImportError as e:
+        raise ImportError(
+            "TypeChecked requires 'typing_extensions' for Python < 3.13 "
+            "to support ReadOnly.") from e
+
 
 class TypedDictKeyInfo:
     """Information about a TypedDict key's required/optional status and contained type.

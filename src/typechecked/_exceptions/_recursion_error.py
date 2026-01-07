@@ -1,6 +1,7 @@
 """TypeChecked Recursion Error Exception."""
-from ._tagged_exception import TaggedException, generate_message
 from ._error_tag import ErrorTag
+from ._tagged_exception import TaggedException, generate_message
+
 
 class TypeCheckedRecursionError(TaggedException[RecursionError], RecursionError):
     """Exception raised when maximum recursion depth is exceeded in typechecked.
@@ -13,10 +14,11 @@ class TypeCheckedRecursionError(TaggedException[RecursionError], RecursionError)
     :param ErrorTag tag: The tag code.
     """
     def __init__(self, msg: str, *, tag: ErrorTag) -> None:
-        """Raises a SimpleBenchRecursionError with the given message and tag.
+        """Raises a TypeCheckedRecursionError with the given message and tag.
 
         :param str msg: The error message.
         :param ErrorTag tag: The tag code.
         """
         message = generate_message(msg, tag)
+        super().__init__(message, tag=tag)
         super().__init__(message, tag=tag)

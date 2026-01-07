@@ -3,27 +3,35 @@ import sys
 from collections.abc import Callable, Collection, Iterable, Mapping, Sequence, Set
 from typing import Any, Protocol
 
-from ._exceptions import TypeCheckedTypeError
-
 from ._cache import _CACHE
 from ._check_result import CheckResult
 from ._constants import IS_IMMUTABLE, IS_VALID, NOT_IMMUTABLE, NOT_VALID
 from ._error_tags import TypeHintsErrorTag
+from ._exceptions import TypeCheckedTypeError
 from ._immutable import is_immutable
 from ._log import log
 from ._options import Options
 from ._validation_state import ValidationState
 
 if sys.version_info >= (3, 11):
-    from typing import NotRequired, ReadOnly, Required, Never
+    from typing import Never, NotRequired, Required
 else:
     try:
-        from typing_extensions import NotRequired, ReadOnly, Required, Never
+        from typing_extensions import Never, NotRequired, Required
     except ImportError as e:
         raise ImportError(
-            "SimpleBench requires 'typing_extensions' for Python < 3.11 "
-            "to support Required, NotRequired, ReadOnly.") from e
+            "TypeChecked requires 'typing_extensions' for Python < 3.11 "
+            "to support Never, Required, NotRequired, ReadOnly.") from e
 
+if sys.version_info >= (3, 13):
+    from typing import ReadOnly
+else:
+    try:
+        from typing_extensions import ReadOnly
+    except ImportError as e:
+        raise ImportError(
+            "TypeChecked requires 'typing_extensions' for Python < 3.13 "
+            "to support ReadOnly.") from e
 __all__ = (
     "_check_generic",
 )

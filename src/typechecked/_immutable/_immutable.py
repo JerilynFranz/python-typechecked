@@ -2,12 +2,12 @@
 from dataclasses import is_dataclass
 from enum import Enum
 from types import MappingProxyType, NoneType
-from typing import Any, TypeGuard, is_typeddict, Annotated, get_args, get_origin
+from typing import Annotated, Any, TypeGuard, get_args, get_origin, is_typeddict
 
-from .._log import log
 from .._exceptions import TypeCheckedRecursionError, TypeCheckedTypeError, TypeCheckedValueError
-from ._protocol import Immutable, ImmutableTypedDict
+from .._log import log
 from ._error_tags import ImmutableErrorTag
+from ._protocol import Immutable, ImmutableTypedDict
 
 
 class NoAttrSentinel:
@@ -108,7 +108,8 @@ def _is_immutable(obj: Any, parents: set[int], depth: int) -> bool:
             raise NotImplementedError(f"Unhandled immutable container type: {type(obj)}")
 
     # Frozen dataclasses
-    elif is_dataclass(obj) and getattr(obj.__dataclass_params__, 'frozen', False):  # type: ignore[attr-defined]
+    elif is_dataclass(obj) and getattr(
+            obj.__dataclass_params__, 'frozen', False):  # type: ignore[attr-defined, union-attr]
         immutable = True
         for field in obj.__dataclass_fields__.values():
             value = getattr(obj, field.name, NO_ATTR)

@@ -21,7 +21,7 @@ __all__ = (
     "clear_typechecked_cache",
 )
 
-T = TypeVar("T", bound=TypedDict)  # type: ignore[invalidTypeForm]
+T = TypeVar("T", bound=TypedDict)  # type: ignore[invalidTypeForm, valid-type]
 
 
 def clear_typechecked_cache() -> None:

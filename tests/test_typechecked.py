@@ -24,15 +24,24 @@ from typing import (
 import pytest
 
 if sys.version_info >= (3, 11):
-    from typing import Never, NotRequired, ReadOnly, Required
+    from typing import Never, NotRequired, Required
 else:
     try:
-        from typing_extensions import Never, NotRequired, ReadOnly, Required
+        from typing_extensions import Never, NotRequired, Required
     except ImportError as e:
         raise ImportError(
-            "SimpleBench requires 'typing_extensions' for Python < 3.11 "
-            "to support Never.") from e
+            "TypeChecked requires 'typing_extensions' for Python < 3.11 "
+            "to support ReadOnly, Never, NotRequired, and Required.") from e
 
+if sys.version_info >= (3, 13):
+    from typing import ReadOnly
+else:
+    try:
+        from typing_extensions import ReadOnly
+    except ImportError as e:
+        raise ImportError(
+            "TypeChecked requires 'typing_extensions' for Python < 3.13 "
+            "to support ReadOnly.") from e
 
 log = logging.getLogger(__name__)
 
@@ -1192,6 +1201,7 @@ def recursive_protocol_testspecs() -> list[TestSpec]:
             ...  # pylint: disable=unnecessary-ellipsis
 
     class Node:
+        """Node implementing NodeProtocol."""
         def __init__(self, val: int, next_node=None):
             """Initialize Node with value and next node."""
             self._val = val

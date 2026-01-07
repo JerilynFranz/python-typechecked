@@ -1,5 +1,6 @@
 """Cache key for object references."""
-from typing import Any, Hashable
+from collections.abc import Hashable
+from typing import Any
 
 
 class CacheKey:
@@ -18,7 +19,7 @@ class CacheKey:
     :property type cls_type: The type of the object.
     :property int instance_id: The id() of the object instance.
     """
-    def __init__(self, cls_type: Hashable, obj: Any) -> None:
+    def __init__(self, cls_type: Hashable | None, obj: Any) -> None:
         """Initialize the CacheKey.
 
         :param Hashable cls_type: The type of the object.

@@ -90,9 +90,9 @@ CLI Help
   -v, --verbose  Enable verbose output (default).
 
 """
-import sys
 # pylint: disable=wrong-import-position
-from operator import ne
+
+import sys
 
 # Check for minimum supported Python version before importing anything else
 # this ensures that users get a clear error message if they try to run
@@ -296,11 +296,11 @@ class VCS(NamedTuple):
     def is_git(self) -> bool:
         """Returns True if the VCS is git."""
         return self.name == "git"
-    
+
     def is_hg(self) -> bool:
         """Returns True if the VCS is Mercurial."""
         return self.name == "hg"
-    
+
     def is_none(self) -> bool:
         """Returns True if no VCS is detected."""
         return self.name == "none"
@@ -308,11 +308,10 @@ class VCS(NamedTuple):
     def __str__(self) -> str:
         return self.name
 
-DETECTED_VCS: VCS = VCS(name="none", repo_root='')
+DETECTED_VCS: VCS = VCS(name="none", repo_root=None)
+"""Cache for the detected version control system.
 
-"""Cache for the detected version control system."""
-
-"""The detected version control system in use (git, hg, or none)."""
+The detected version control system in use (git, hg, or none)."""
 
 def run_post_install_steps(python_exe: Path, root_path: Path, bin_dir: Path) -> None:
     """Runs any post-installation steps required after installing tools.
@@ -342,7 +341,7 @@ def run_post_install_steps(python_exe: Path, root_path: Path, bin_dir: Path) -> 
 
     # Alternatives include installing from requirements.txt files or other setup steps.
     # run_command([...]) can be used to run any commands needed.
-    
+
     #Example implementation (assuming you are not deleting the venv right after):
     # run_command([python_exe, "-m", "pip", "install", "-r", "requirements.txt"], cwd=root_path, check=True)
 
@@ -488,13 +487,15 @@ def run_command(command: list[str | Path], *,
             kwargs.setdefault('stdout', subprocess.DEVNULL)
             kwargs.setdefault('stderr', subprocess.DEVNULL)
         subprocess.run(command, check=check, cwd=cwd, **kwargs)
-    except FileNotFoundError:
+
+    except FileNotFoundError as e:
         print(f"Error: Command '{command[0]}' not found. Is it in your PATH?")
-        raise FatalBootstrapError(f"Command '{command[0]}' not found.", error_code=1)
+        raise FatalBootstrapError(f"Command '{command[0]}' not found.", error_code=1) from e
+
     except subprocess.CalledProcessError as e:
         print(f"Error: Command {command} failed with exit code {e.returncode}")
         raise FatalBootstrapError(f"Command {command} failed with exit code {e.returncode}",
-                                  error_code=e.returncode)
+                                  error_code=e.returncode) from e
 
 def controlled_print(message: str) -> None:
     """Prints a message if not in quiet mode."""
@@ -550,7 +551,7 @@ def get_repo_root() -> Path:
             root_dir = hg_root_bytes.decode('utf-8').strip()
             DETECTED_VCS = VCS(name="hg", repo_root=Path(root_dir))
             return Path(root_dir)
-        except (FileNotFoundError, subprocess.CalledProcessError):
+        except (FileNotFoundError, subprocess.CalledProcessError) as e:
             # Fallback to directory search...
             current_dir = Path.cwd()
             for parent in [current_dir] + list(current_dir.parents):
@@ -565,7 +566,7 @@ def get_repo_root() -> Path:
                     return parent
 
             controlled_print("Error: No Git or Mercurial repository found in any parent directories.")
-            raise FatalBootstrapError("No repository found.", error_code=1)
+            raise FatalBootstrapError("No repository found.", error_code=1) from e
 
 def install_vcs_hooks(repo_root: Path, forced: bool) -> None:
     """Install pre-commit and pre-push hooks for git or hg if present.
@@ -644,16 +645,16 @@ def _install_git_hooks(repo_root: Path, forced: bool) -> None:
                         continue
                 try:
                     shutil.copy2(hook_file, dest_hook)
-                except Exception as e:
+                except Exception as e:  # pylint: disable=broad-exception-caught
                     controlled_print(f"Error: Could not copy hook {hook_file} to {dest_hook}: {e}")
                     controlled_print("Skipping this hook.")
                     continue
                 try:
                     dest_hook.chmod(dest_hook.stat().st_mode | stat.S_IEXEC)
-                except Exception:
+                except Exception:   # pylint: disable=broad-exception-caught
                     controlled_print(f"Warning: Could not set executable permission for {dest_hook}")
                 controlled_print(f"Installed git hook: {dest_hook}")
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught
         controlled_print(f"Error while installing Git hooks: {e}")
         controlled_print("Skipping Git hooks installation. Some hooks may not be installed.")
 
@@ -678,7 +679,7 @@ def _install_hg_hooks(repo_root: Path, forced: bool) -> None:
         if not hgrc_file.exists():
             controlled_print(f"No hgrc file found at {hgrc_file}; creating a new one.")
             hgrc_file.touch()
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught
         controlled_print(f"Error: Could not create hgrc file at {hgrc_file}: {e}")
         controlled_print("Skipping Mercurial hooks installation.")
         return
@@ -698,7 +699,7 @@ def _install_hg_hooks(repo_root: Path, forced: bool) -> None:
                     continue
                 hook_entries.append(f"{hook_name} = {relative_hooks_path}/{hook_name}\n")
                 hook_names.add(hook_name)
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught
         controlled_print(f"Error while preparing Mercurial hooks: {e}")
         controlled_print("Skipping Mercurial hooks installation.")
         return
@@ -709,7 +710,7 @@ def _install_hg_hooks(repo_root: Path, forced: bool) -> None:
 
     try:
         uniquifier = 1
-        new_hgrc_file = hgrc_file.with_name(hgrc_file.name + f"new_{uniquifier}") 
+        new_hgrc_file = hgrc_file.with_name(hgrc_file.name + f"new_{uniquifier}")
         while new_hgrc_file.exists():
             uniquifier += 1
             new_hgrc_file = hgrc_file.with_name(hgrc_file.name + f"new_{uniquifier}")
@@ -719,6 +720,7 @@ def _install_hg_hooks(repo_root: Path, forced: bool) -> None:
             found_hooks_section = False
             with new_hgrc_file.open("w") as hgrc:
                 in_hooks_section = False
+                line: str
                 for line in hgrc_content:
                     # Find [hooks] section
                     stripped_line = line.strip()
@@ -727,7 +729,7 @@ def _install_hg_hooks(repo_root: Path, forced: bool) -> None:
                         found_hooks_section = True
                         hgrc.write(line)
                         continue
-                    
+
                     # Process lines in [hooks] section
                     if in_hooks_section:
                         # end of [hooks] section
@@ -765,11 +767,11 @@ def _install_hg_hooks(repo_root: Path, forced: bool) -> None:
             shutil.copy2(hgrc_file, backup_file)
             shutil.move(new_hgrc_file, hgrc_file)
 
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught
         controlled_print(f"Error while installing Mercurial hooks: {e}")
         controlled_print("Skipping Mercurial hooks installation.")
         return
-    
+
     controlled_print(f"Configured Mercurial hooks in {hgrc_file}")
 
 def _already_installed_hg_hooks(repo_root: Path) -> set[str]:
@@ -780,9 +782,9 @@ def _already_installed_hg_hooks(repo_root: Path) -> set[str]:
     """
     _validate_path(repo_root, "repo_root", exists=True)
 
-    hg_dir = repo_root / ".hg"
-    hgrc_file = hg_dir / "hgrc"
-    installed_hooks = set()
+    hg_dir: Path = repo_root / ".hg"
+    hgrc_file: Path = hg_dir / "hgrc"
+    installed_hooks: set[str] = set()
 
     if not hgrc_file.exists():
         return installed_hooks
@@ -800,7 +802,7 @@ def _already_installed_hg_hooks(repo_root: Path) -> set[str]:
                 if '=' in line:
                     hook_name = line.split('=')[0].strip()
                     installed_hooks.add(hook_name)
-    
+
     return installed_hooks
 
 def path_to_venv_python(venv_dir: Path) -> Path:
@@ -871,18 +873,21 @@ def create_virtual_environment(venv_dir: Path, python_exe: Path) -> None:
     else:
         controlled_print(f"Virtual environment '{venv_dir}' already exists. Skipping creation.")
 
-def remove_virtual_environment(venv_dir: Path, quiet: bool = False) -> None:
+def remove_virtual_environment(venv_dir: Path | None = None, quiet: bool = False) -> None:
     """Removes the temporary virtual environment directory.
     
     :param venv_dir Path: The directory of the virtual environment to remove.
     """
+    if venv_dir is None:
+        return
+
     if not quiet:
         controlled_print(f"Removing temporary virtual environment at '{venv_dir}'...")
     if venv_dir.exists():
         if sys.version_info >= (3, 12):
             shutil.rmtree(venv_dir, onexc=_remove_readonly)
         else:  # error handler deprecated in 3.12+
-            shutil.rmtree(venv_dir, onerror=_remove_readonly)
+            shutil.rmtree(venv_dir, onerror=_remove_readonly)  # pylint: disable=deprecated-argument
 
 def _remove_readonly(func, path, _):
     "Clear the readonly bit and reattempt the removal"
@@ -1044,7 +1049,7 @@ def parse_arguments() -> argparse.Namespace:
 
     return arg_parser.parse_args()
 
-def main():
+def main() -> None:
     """
     Checks for required development tools and bootstraps a local virtual
     environment with them if necessary.
@@ -1059,6 +1064,7 @@ def main():
     if not args.yes and not confirmation_prompt(CONFIRMATION_PROMPT_MESSAGE):
         print("Aborted by user.")
         sys.exit(0)
+    venv_dir: Path | None = None
     try:
         repo_root = get_repo_root()
 
@@ -1087,10 +1093,11 @@ def main():
         controlled_print(f"Fatal error during bootstrap: {e}")
         sys.exit(e.error_code)
 
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught
         remove_virtual_environment(venv_dir, quiet=True)
         controlled_print(f"Fatal error during bootstrap: {e}")
         sys.exit(1)
 
 if __name__ == "__main__":
+    main()
     main()

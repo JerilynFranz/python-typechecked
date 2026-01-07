@@ -4,7 +4,6 @@ from typing import Any, TypeAlias
 
 from ._log import log
 
-
 __all__ = (
     "ImmutablePrimitiveTypes",
     "ImmutablePrimitiveTypesTuple",
@@ -13,7 +12,7 @@ __all__ = (
     "_is_primitive",
 )
 
-ImmutablePrimitiveTypes: TypeAlias = int | str | bytes | bool | float | complex | NoneType
+ImmutablePrimitiveTypes: TypeAlias = int | str | bytes | bool | float | complex | type[None]
 """Type alias for primitive data types."""
 
 ImmutablePrimitiveTypesTuple: tuple[type[int] | type[str] | type[bytes]  # pylint: disable=invalid-name
