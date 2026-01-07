@@ -10,6 +10,7 @@ from typing import (
     Any,
     Callable,
     Final,
+    Generic,
     Literal,
     NewType,
     Optional,
@@ -18,6 +19,8 @@ from typing import (
     TypeVar,
     runtime_checkable,
 )
+
+T = TypeVar('T')
 
 import pytest
 

@@ -6,6 +6,8 @@ from .._exceptions import ErrorTag
 @enum_docstrings
 class TypeHintsErrorTag(ErrorTag):
     """Error tags for type hints validation errors."""
+    UNHANDLED_GENERIC_TYPE_HINT = "UNHANDLED_GENERIC_TYPE_HINT"
+    """An unhandled generic type hint was encountered during validation."""
     NON_RUNTIME_CHECKABLE_PROTOCOL = "NON_RUNTIME_CHECKABLE_PROTOCOL"
     """A non-runtime checkable Protocol was used in an isinstance check."""
     INVALID_RESOLVE_FORWARD_REFERENCES = "INVALID_RESOLVE_FORWARD_REFERENCES"

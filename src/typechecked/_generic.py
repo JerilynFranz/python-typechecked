@@ -201,70 +201,17 @@ def _check_generic(
                 tag=TypeHintsErrorTag.TYPE_HINT_MISMATCH)
         return result
 
-    # Fallback for other generics, including user-defined generics.
+    # If we reached here, something very, very wierd is going on.
+    # We will raise an error to flag this situation but this should
+    # never happen under normal circumstances.
+    # There used to be fallback code here, but we couldn't come up with an actual
+    # example that reached that code path even with user-defined generics that
+    # were manually constructed.
     log.debug(
-        "_check_generic: Fallback check for object of type '%s' against generic type hint '%s'",
+        "_check_generic: No specific check found for object of type '%s' against generic type hint '%s'",
         type(obj).__name__, type_hint)
 
-    # Validate each __orig_class__ parameter if available
-    if hasattr(obj, '__orig_class__'):
-        obj_args = getattr(obj.__orig_class__, '__args__', ())
-        if len(obj_args) == len(args):
-            for item, hint in zip(obj_args, args):
-                is_valid, is_imm = _check_instance_of_typehint(
-                    item, hint, options, parents, raise_on_error, context="generic_parameter")
-                obj_is_immutable = obj_is_immutable and is_imm
-                if not is_valid:
-                    if raise_on_error:
-                        raise TypeCheckedTypeError(
-                            f"Generic parameter '{item}' does not match type hint '{hint}'.",
-                            tag=TypeHintsErrorTag.VALIDATION_FAILED)
-                    return CheckResult(NOT_VALID, NOT_IMMUTABLE)
-
-            if obj_is_immutable:
-                _CACHE.add_cache_entry(type_hint, obj, IS_VALID, options.noncachable_types)
-            return CheckResult(IS_VALID, obj_is_immutable)
-
-    # Validate type parameters for user-defined generics if __orig_class__ is not present
-    if not hasattr(obj, '__orig_class__'):
-        obj_type = type(obj)
-        obj_origin = getattr(obj_type, '__origin__', None)
-        obj_args = getattr(obj_type, '__args__', None)
-        if obj_origin is origin and obj_args is not None and len(obj_args) == len(args):
-            for item, hint in zip(obj_args, args):
-                is_valid, is_imm = _check_instance_of_typehint(
-                    item, hint, options, parents, raise_on_error, context="generic_parameter")
-                obj_is_immutable = obj_is_immutable and is_imm
-                if not is_valid:
-                    if raise_on_error:
-                        raise TypeCheckedTypeError(
-                            f"Generic parameter '{item}' does not match type hint '{hint}'.",
-                            tag=TypeHintsErrorTag.VALIDATION_FAILED)
-                    return CheckResult(NOT_VALID, NOT_IMMUTABLE)
-            if obj_is_immutable:
-                _CACHE.add_cache_entry(type_hint, obj, IS_VALID, options.noncachable_types)
-            return CheckResult(IS_VALID, obj_is_immutable)
-
-    # Fallback: check contained items if possible
-    if hasattr(obj, '__iter__'):
-        for item in obj:
-            is_valid, is_imm = _check_instance_of_typehint(
-                item, args[0], options, parents, raise_on_error, context="generic_item")
-            obj_is_immutable = obj_is_immutable and is_imm
-            if not is_valid:
-                if raise_on_error:
-                    raise TypeCheckedTypeError(
-                        f"Object of type '{type(obj).__name__}' is not an instance of generic type hint '{type_hint}'",
-                        tag=TypeHintsErrorTag.TYPE_HINT_MISMATCH)
-                return CheckResult(NOT_VALID, NOT_IMMUTABLE)
-
-    result = CheckResult(IS_VALID, obj_is_immutable)
-
-    if obj_is_immutable:
-        _CACHE.add_cache_entry(type_hint, obj, result.valid, options.noncachable_types)
-
-    if raise_on_error and not result.valid:
-        raise TypeCheckedTypeError(
-            f"Object of type '{type(obj).__name__}' is not an instance of generic type hint '{type_hint}'",
-            tag=TypeHintsErrorTag.TYPE_HINT_MISMATCH)
-    return result
+    raise TypeCheckedTypeError(
+        f"Unable to validate object of type '{type(obj).__name__}' against "
+        f"generic type hint '{type_hint}'",
+        tag=TypeHintsErrorTag.UNHANDLED_GENERIC_TYPE_HINT)

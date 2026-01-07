@@ -1,4 +1,5 @@
 """Helper function to validate primitive types against type hints."""
+from enum import Enum
 from types import NoneType
 from typing import Any, TypeAlias
 
@@ -12,12 +13,12 @@ __all__ = (
     "_is_primitive",
 )
 
-ImmutablePrimitiveTypes: TypeAlias = int | str | bytes | bool | float | complex | type[None]
+ImmutablePrimitiveTypes: TypeAlias = int | str | bytes | bool | float | complex | type[None] | range | Enum
 """Type alias for primitive data types."""
 
 ImmutablePrimitiveTypesTuple: tuple[type[int] | type[str] | type[bytes]  # pylint: disable=invalid-name
-        | type[bool] | type[float] | type[complex] | type[None], ...] = (
-            int, str, bytes, bool, float, complex, NoneType)
+        | type[bool] | type[float] | type[complex] | type[None] | type[range] | type[Enum], ...] = (
+            int, str, bytes, bool, float, complex, NoneType, range, Enum)
 """Tuple of primitive data types for isinstance checks."""
 
 IMMUTABLE_PRIMITIVE_TYPES_SET: set[Any] = set(ImmutablePrimitiveTypesTuple)
