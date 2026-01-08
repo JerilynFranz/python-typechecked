@@ -10,7 +10,23 @@ maintainers = [
     {name = "Jerilyn Franz", email = "opensource@snowhare.com"}
 ]
 readme = "README.rst"
-keywords = ["typehint", "developer", "development", "typechecking", "type-checked", "typechecked", "runtime", "validation"]
+keywords = [
+    "typehint",
+    "type-hints",
+    "typechecking",
+    "type-checking",
+    "typechecked",
+    "type-checked",
+    "runtime",
+    "runtime-validation",
+    "validation",
+    "typing",
+    "developer-tools",
+    "python",
+    "static-analysis",
+    "type-safety",
+    "type-enforcement"
+]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",

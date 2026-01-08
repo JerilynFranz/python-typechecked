@@ -1,5 +1,5 @@
-"""Zero-dependency, cross-platform bootstrap script to set up a Python
-development environment.
+"""Zero-dependency, cross-platform bootstrap script to set up a local Python
+development virtual environment.
 
 This is a specialized version of the bootstrap script for projects that
 require Python 3.10 or later. It may use features that were deprecated
@@ -12,6 +12,34 @@ It has been tested with Python 3.10 through 3.14 as of December 2025.
 
 This script is part of the 'python-env-bootstrap' project available at
 https://github.com/JerilynFranz/python-env-bootstrap
+
+Instructions
+------------
+
+This script performs the **MINIMUM** steps required to set up a local
+development environment for a Python project. It creates a virtual environment,
+installs necessary development tools, and performs any project-specific
+setup steps.
+
+It is expected to be customized as needed for each project by modifying
+the constants and functions defined in this script.
+
+It DOES NOT attempt to handle the installation of project dependencies
+or other setup tasks beyond the minimum required to get started with
+development. Those tasks should be handled by the project's own
+dependency management and build tools (e.g., 'uv', 'tox', 'poetry', etc.)
+
+It is intended to get a new developer on a project to the point where they
+*CAN* use those tools to manage the rest of the project development environment.
+
+It is designed to be easily customizable and extensible for project-specific
+needs. If you wish to add additional setup steps, you can modify the
+`run_post_install_steps()` function to perform any additional tasks
+required after installing the core development tools.
+
+You should regard this script as a starting point for bootstrapping
+your project's development environment, and modify it as needed to suit your
+project's specific requirements.
 
 License
 -------                         
@@ -30,21 +58,25 @@ Description
 -----------
 
 It is designed to be run after cloning a git or Mercurial repository, to create
-a local virtual environment (.venvtools), and install necessary development tools.
+a local virtual environment (.venv-tools), and install necessary development tools.
+
+This includes installation of git or Mercurial hooks if applicable.
 
 It relies only on the Python standard library and network access to PyPI and
 does not require any pre-installed packages or change your system Python installation.
 
-This example project requires Python 3.8 or later, so this script
+This example project requires Python 3.10 or later, so this script
 checks the Python version meets that requirement before proceeding.
 
 The minimum Python version can be changed as needed for your project and
-the lowest supported version is Python 3.8.
+the lowest supported version is Python 3.10.
 
 This script installs the following tools by default:
 - uv (for managing Python packages and dependencies)
 - tox (for running tests, linters, and building documentation)
 - tox-uv (to integrate uv with tox)
+- setuptools (for building and installing packages)
+- poetry (for dependency management and packaging)
  
 That is the minimum set of tools required to start development for this project.
 
@@ -63,8 +95,12 @@ Settable Options
 ----------------
 
 - VENV_DIR: The name of the virtual environment directory to create.
-- BOOTSTRAP_MODULES: A list of InstallSpec instances specifying the packages
+- BOOTSTRAP_MODULES: A list of InstallSpec instances specifying the PyPI packages
   to install into the virtual environment during bootstrap.
+- POST_INSTALL_MESSAGE: You can customize the message displayed after installation
+    by modifying the POST_INSTALL_MESSAGE constant.
+- TOOL_USAGE_INSTRUCTIONS: You can customize the usage instructions displayed after installation
+    by modifying the TOOL_USAGE_INSTRUCTIONS constant.
 - Post-install steps: You can customize the `run_post_install_steps()`
   function to perform additional setup tasks after installing the core tools.
 - Output control: You can set `DEFAULT_DEBUG` and `DEFAULT_QUIET` constants
@@ -174,6 +210,8 @@ BOOTSTRAP_MODULES: list[InstallSpec] = [
     InstallSpec(name="uv", version=">=0.9.18"),
     InstallSpec(name="tox", version=">=4.22.0"),
     InstallSpec(name="tox-uv", version=">=1.13.1"),
+    InstallSpec(name="setuptools", version=">=69.5.1"),
+    InstallSpec(name="poetry", version=">=2.2.1"),
 ]
 
 # --- Tool usage instructions template ---
@@ -225,8 +263,8 @@ so that VSCode uses the correct packages installed in that environment.
 If you can't find the interpreter in the list, you should look in VSCode's
 Settings under "Python: Use Environments Extension" and enable that option to have VSCode
 list virtual environments automatically. That should add the activated venv's interpreter
-to the list of available interpreters under a name like 'python-typechecked/venv/bin/python' (or
-'python-typechecked\venv\Scripts\python.exe' on Windows).
+to the list of available interpreters under a name like 'python-typechecked/venv/bin/python'
+(or 'python-typechecked\\venv\\Scripts\\python.exe' on Windows).
 
 If you are using another IDE or editor, refer to its documentation for selecting
 the Python interpreter from a virtual environment.
