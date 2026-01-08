@@ -32,7 +32,7 @@ def _check_collections_abc_callable(  # noqa: C901
     :raises TypeCheckedTypeError: If raise_on_error is True and validation fails.
     :raises TypeCheckedValueError: If origin is not a subclass of Callable.
     """
-    from .._type_hints import _is_subtype_of_typehint  # pylint: disable=import-outside-toplevel
+    from .._typechecked import _is_subtype_of_typehint  # pylint: disable=import-outside-toplevel
 
     log.debug(
         "_container_check_callable: Checking object of type '%s' against Callable type hint '%s'",

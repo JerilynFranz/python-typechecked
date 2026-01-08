@@ -37,7 +37,7 @@ def _check_typing_union(
     :raises TypeCheckedTypeError: If raise_on_error is True and validation fails
     :raises TypeCheckedValueError: If type_hint is not a Union type.
     """
-    from .._type_hints import _check_instance_of_typehint  # pylint: disable=import-outside-toplevel
+    from .._typechecked import _check_instance_of_typehint  # pylint: disable=import-outside-toplevel
 
     log.debug("_union_check: Checking object of type '%s' against Union type hint '%s'",
               type(obj).__name__, type_hint)

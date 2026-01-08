@@ -46,7 +46,7 @@ def _check_typing_typeddict(  # pylint: disable=too-many-locals,too-many-return-
     :raises TypeCheckedTypeError: If raise_on_error is True and validation fails.
     :raises TypeCheckedValueError: If type_hint is not a TypedDict.
     """
-    from .._type_hints import _check_instance_of_typehint  # pylint: disable=import-outside-toplevel
+    from .._typechecked import _check_instance_of_typehint  # pylint: disable=import-outside-toplevel
 
     log.debug(
         "_container_check_typeddict: Checking object of type '%s' against TypedDict type hint '%s'",

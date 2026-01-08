@@ -8,7 +8,7 @@ from ._immutable import (
     is_immutable_typeddict_typehint,
     validate_immutable,
 )
-from ._type_hints import clear_typechecked_cache, isinstance_of_typehint
+from ._typechecked import clear_typechecked_cache, isinstance_of_typehint
 
 __all__ = [
     "clear_typechecked_cache",

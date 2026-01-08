@@ -38,7 +38,7 @@ def _check_collections_abc_sequence(  # pylint: disable=too-many-return-statemen
     :raises TypeCheckedTypeError: If raise_on_error is True and validation fails.
     :raises TypeCheckedValueError: If origin is not a subclass of Sequence.
     """
-    from .._type_hints import _check_instance_of_typehint  # pylint: disable=import-outside-toplevel
+    from .._typechecked import _check_instance_of_typehint  # pylint: disable=import-outside-toplevel
 
     log.debug(
         "_container_check_sequence: Checking object of type '%s' against Sequence type hint '%s'",

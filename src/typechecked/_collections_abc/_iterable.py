@@ -38,7 +38,7 @@ def _check_collections_abc_iterable(
     :raises TypeCheckedTypeError: If raise_on_error is True and validation fails.
     :raises TypeCheckedValueError: If origin is not a subclass of Iterable.
     """
-    from .._type_hints import _check_instance_of_typehint  # pylint: disable=import-outside-toplevel
+    from .._typechecked import _check_instance_of_typehint  # pylint: disable=import-outside-toplevel
 
     log.debug(
         "_container_check_iterable: Checking object of type '%s' against Iterable type hint '%s'",
