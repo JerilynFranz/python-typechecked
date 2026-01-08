@@ -14,7 +14,7 @@ This script is part of the 'python-env-bootstrap' project available at
 https://github.com/JerilynFranz/python-env-bootstrap
 
 License
--------
+-------                         
 
 Licensed under the Apache License, Version 2.0 (SPDX-License-Identifier: Apache-2.0)
 https://www.apache.org/licenses/LICENSE-2.0.txt
@@ -41,12 +41,12 @@ checks the Python version meets that requirement before proceeding.
 The minimum Python version can be changed as needed for your project and
 the lowest supported version is Python 3.8.
 
-This example script installs the following tools by default:
+This script installs the following tools by default:
 - uv (for managing Python packages and dependencies)
 - tox (for running tests, linters, and building documentation)
 - tox-uv (to integrate uv with tox)
  
-That is the minimum set of tools required to start development for this example project.
+That is the minimum set of tools required to start development for this project.
 
 The minimum supported Python version, virtual environment directory name,
 and list of tools to install can be customized by modifying the
@@ -90,7 +90,7 @@ CLI Help
   -v, --verbose  Enable verbose output (default).
 
 """
-# pylint: disable=wrong-import-position
+# pylint: disable=wrong-import-position,too-many-lines
 
 import sys
 
