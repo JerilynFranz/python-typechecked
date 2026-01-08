@@ -2,6 +2,9 @@
 from typing import Any, NamedTuple
 
 
+__all__ = ('Options',)
+
+
 class Options(NamedTuple):
     """Options for type hint validation functions.
 
@@ -18,5 +21,3 @@ class Options(NamedTuple):
     """Whether to consume iterators during validation."""
     noncachable_types: set[type[Any]] | None = None
     """Set of types that should not be cached during validation."""
-
-__all__ = ('Options',)

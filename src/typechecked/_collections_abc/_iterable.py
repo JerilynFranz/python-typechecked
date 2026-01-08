@@ -16,6 +16,7 @@ __all__ = (
     "_check_collections_abc_iterable",
 )
 
+
 def _check_collections_abc_iterable(
         obj: Any,
         type_hint: Any,
@@ -84,8 +85,8 @@ def _check_collections_abc_iterable(
     else:
         item_type_hint = Any
     for item in obj:
-        is_valid, is_imm = _check_instance_of_typehint(item, item_type_hint, options,
-                                                 new_parents, raise_on_error=False, context="iterable_item")
+        is_valid, is_imm = _check_instance_of_typehint(
+            item, item_type_hint, options, new_parents, raise_on_error=False, context="iterable_item")
         if not is_valid:
             if raise_on_error:
                 raise TypeCheckedTypeError(

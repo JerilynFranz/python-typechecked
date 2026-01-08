@@ -9,7 +9,7 @@ from ._cache_key import CacheKey
 
 class ObjectWrapper:
     """A wrapper to allow weak references to any object.
-    
+
     :property Any obj: The wrapped object.
     """
     __slots__ = ("obj", "__weakref__")
@@ -24,7 +24,7 @@ class ObjectWrapper:
 
 class CacheEntry:
     """Cache entry for validation results.
-    
+
     :param Hashable td_cls: The type associated with the cached object.
     :property object obj: The object having its validity cached.
     :property bool is_valid: Whether the object is valid.

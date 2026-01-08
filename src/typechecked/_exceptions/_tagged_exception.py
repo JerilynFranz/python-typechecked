@@ -63,7 +63,6 @@ class TaggedException(Exception, Generic[E]):
         super().__init__(*args, **kwargs)
 
 
-
 def dedent_and_normalize_whitespace(text: str) -> str:
     """Dedent and and normalize whitespace.
 
@@ -86,7 +85,6 @@ def dedent_and_normalize_whitespace(text: str) -> str:
 def generate_message(msg: str, tag: ErrorTag) -> str:
     """Generate an error message with the given tag.
 
-   
     :param str msg: The base error message.
     :param ErrorTag tag: The error tag.
     :return str: The generated error message.

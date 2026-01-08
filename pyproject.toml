@@ -51,6 +51,7 @@ lint = [
     "isort>=5.12.0",
     "mypy>=1.13.1",
     "pylint>=3.1.8",
+    "pytest>=7.4.1,<9.0.0",
     "yapf>=0.40.0",
 ]
 
@@ -130,7 +131,7 @@ description = "Build the documentation"
 base_python = ["python3.12"]
 dependency_groups = ["docs", "test"]
 extras = ["all"]
-allowlist_externals = ["sphinx-build"]
+allowlist_externals = ["sphinx-build", "sphinx-apidoc"]
 commands = [
     ["sphinx-apidoc", "--separate", "--remove-old", "--module-first", "-f", "-o", "docs_source/source", "src"],
     ["sphinx-build", "-b", "html", "docs_source/", "documentation/"],
@@ -190,8 +191,6 @@ defineConstant = { DEBUG = true }
 reportMissingImports = "error"
 reportUnnecessaryIsInstance = false
 
-
-
 [tool.flake8]
 max-line-length = 120
 max-complexity = 20
@@ -224,6 +223,9 @@ split_before_named_assigns = true
 
 [tool.pylint.format]
 max-line-length = 120
+
+[tool.pylint.'MESSAGES CONTROL']
+disable = ["R0401", "R0801", "R0903", "R0902", "R0912", "R0913","R0915", "R0917"]
 
 [tool.pylint.MASTER]
 

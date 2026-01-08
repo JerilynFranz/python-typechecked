@@ -1,4 +1,5 @@
 """Helper functions to validate container types against type hints."""
+# pylint: disable=too-many-return-statements
 import inspect
 from collections.abc import Callable
 from typing import Any
@@ -13,7 +14,8 @@ __all__ = (
     "_check_collections_abc_callable",
 )
 
-def _check_collections_abc_callable(
+
+def _check_collections_abc_callable(  # noqa: C901
         obj: Any,
         type_hint: Any,
         origin: Any,
@@ -52,7 +54,7 @@ def _check_collections_abc_callable(
         return CheckResult(IS_VALID, NOT_IMMUTABLE)
 
     # Callable[..., ReturnType] (ellipsis means any arguments)
-    if args[0] is Ellipsis:
+    if args[0] is Ellipsis:  # pylint: disable=too-many-nested-blocks
         if len(args) == 2:  # Optionally check return type if possible
             try:
                 sig = inspect.signature(obj)

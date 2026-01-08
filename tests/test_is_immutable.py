@@ -3,28 +3,29 @@
 import enum
 import logging
 import sys
+from dataclasses import dataclass
 from types import MappingProxyType
 
 import pytest
 from testspec import Assert, TestAction, TestSpec, idspec
 
-from typechecked import Immutable, ImmutableTypedDict, is_immutable
+from typechecked import Immutable, is_immutable
 
 if sys.version_info >= (3, 11):
-    from typing import Never, NotRequired, Required
+    from typing import Never, NotRequired, Required  # noqa: F401
 else:
     try:
-        from typing_extensions import Never, NotRequired, Required
+        from typing_extensions import Never, NotRequired, Required  # noqa: F401
     except ImportError as e:
         raise ImportError(
             "TypeChecked requires 'typing_extensions' for Python < 3.11 "
             "to support ReadOnly, Never, NotRequired, and Required.") from e
 
 if sys.version_info >= (3, 13):
-    from typing import ReadOnly
+    from typing import ReadOnly  # noqa: F401
 else:
     try:
-        from typing_extensions import ReadOnly
+        from typing_extensions import ReadOnly  # noqa: F401
     except ImportError as e:
         raise ImportError(
             "TypeChecked requires 'typing_extensions' for Python < 3.13 "
@@ -32,20 +33,24 @@ else:
 
 log = logging.getLogger(__name__)
 
+
 class Color(enum.Enum):
     """Sample enum for testing immutability."""
     RED = 1
     GREEN = 2
+
 
 class Plain:
     """A plain user-defined class (mutable by default)."""
     def __init__(self, x):
         self.x = x
 
+
 class Frozen(Immutable):
     """A user-defined class inheriting from Immutable."""
     def __init__(self, x):
         self._x = x
+
 
 class FrozenWithMutable(Immutable):
     """A user-defined class inheriting from Immutable but containing a mutable attribute."""
@@ -53,20 +58,24 @@ class FrozenWithMutable(Immutable):
         self._x = x
         self.lst = []
 
-from dataclasses import dataclass
-
 
 @dataclass(frozen=True)
 class FrozenDataClass:
+    """A frozen dataclass."""
     x: int
+
 
 @dataclass(frozen=False)
 class NotFrozenDataClass:
+    """A non-frozen dataclass."""
     x: int
+
 
 @dataclass(frozen=True)
 class FrozenDataClassWithMutable:
+    """Frozen dataclass with a mutable field."""
     x: list[int]
+
 
 @pytest.mark.parametrize('testspec', [
     idspec('IMMUTABLE_001', TestAction(

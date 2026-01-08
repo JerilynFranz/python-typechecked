@@ -9,4 +9,5 @@ class CheckResult(NamedTuple):
     immutable: bool
     """Indicates if the object is immutable according to validation rules."""
 
+
 __all__ = ('CheckResult',)

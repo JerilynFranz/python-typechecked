@@ -28,6 +28,7 @@ def clear_typechecked_cache() -> None:
     """Clear the internal type hint validation cache."""
     _CACHE.clear()
 
+
 def isinstance_of_typehint(
         obj: Any,
         type_hint: Any,
@@ -52,7 +53,7 @@ def isinstance_of_typehint(
         class Person(TypedDict):
             name: str
             age: int
-        
+
         DataType: TypeAlias = list[int] | Person  # TypeAlias is optional, but clarifies intent for static analysis
         data: DataType = {"name": "Alice", "age": 30}
         result = isinstance_of_typehint(data, DataType)
@@ -65,7 +66,7 @@ def isinstance_of_typehint(
         bad_data = {"name": "Charlie", "age": "thirty"}
         result = isinstance_of_typehint(bad_data, Person)
         print(result)  # False
-        
+
     It can validate whether an object conforms to complex type hints the same way
     that static type checkers do - but at runtime. This makes it useful for
     validating function arguments, configuration data, or any other data structures
@@ -100,7 +101,7 @@ def isinstance_of_typehint(
            valid = all(isinstance(item, (str, int, dict)) for item in data)
         else:
            valid = False
-    
+
     than to do:
     .. code-block:: python
         valid = isinstance_of_typehint(data, list[str | int | dict[str, list[float | None]]])
@@ -122,7 +123,7 @@ def isinstance_of_typehint(
     use cases effectively.
 
     If you need both performance and type hint validation, consider using
-    specialized libraries like `pydantic <https://pydantic-docs.helpmanual.io/>`_ 
+    specialized libraries like `pydantic <https://pydantic-docs.helpmanual.io/>`_
     or `attrs <https://www.attrs.org/en/stable/>`_ that are optimized
     for runtime data validation with type hints. They are more complex
     to use but can offer far better performance for specific use cases.
@@ -131,7 +132,7 @@ def isinstance_of_typehint(
     user-defined classes as immutable for caching purposes. There is also
     a :class:`~typechecked.ImmutableTypedDict` type that can be used
     to mark immutable TypedDicts. If your objects are immutable, caching
-    will be much more effective. 
+    will be much more effective.
 
     The checker automatically treats built-in immutable types (NoneType, bool, int, float,
     complex, str, bytes) as immutable for caching purposes and when composed
@@ -149,7 +150,7 @@ def isinstance_of_typehint(
         without using a string to represent types.
 
         Examples:
-    
+
         .. code-block:: python
             isinstance_of_typehint(obj, 'list[int]')  # This will raise TypeCheckedValueError
 
@@ -169,7 +170,7 @@ def isinstance_of_typehint(
     The depth parameter limits the recursion depth for nested structures. If the
     depth limit is reached, the function will return `True` for validity, but
     will not validate any deeper levels of the object. This is to prevent infinite
-    recursion in case of cyclic references or excessively deep structures. 
+    recursion in case of cyclic references or excessively deep structures.
 
     The `depth` parameter is defined as the number of nested levels to check within the object
     structure (including the top-level object). For example:
@@ -215,7 +216,8 @@ def isinstance_of_typehint(
         obj, type_hint, options, parents=set(), raise_on_error=False, context="root")
     return result.valid
 
-def _check_instance_of_typehint(
+
+def _check_instance_of_typehint(  # pylint: disable=too-many-return-statements  # noqa: C901
         obj: Any,
         type_hint: Any,
         options: Options,
@@ -301,8 +303,7 @@ def _check_instance_of_typehint(
                     f"Object of type '{type(obj).__name__}' is not an instance of NewType supertype '{supertype}'",
                     tag=TypeHintsErrorTag.TYPE_HINT_MISMATCH)
             return CheckResult(NOT_VALID, NOT_IMMUTABLE)
-        log.debug("_check_instance_of_typehint: Unwrapping NewType '%s' to supertype '%s'",
-                    type_hint, supertype)
+        log.debug("_check_instance_of_typehint: Unwrapping NewType '%s' to supertype '%s'", type_hint, supertype)
         type_hint = supertype
         return _check_instance_of_typehint(obj, type_hint, options, new_parents, raise_on_error, context="root")
 
@@ -315,17 +316,18 @@ def _check_instance_of_typehint(
                 if _check_instance_of_typehint(obj, constraint, options, new_parents, False, context=context).valid:
                     return CheckResult(IS_VALID, is_immutable(obj))
             return CheckResult(NOT_VALID, is_immutable(obj))
-        elif type_hint.__bound__:
+
+        if type_hint.__bound__:
             # Accept if obj matches the bound
             return _check_instance_of_typehint(
                 obj, type_hint.__bound__, options, new_parents, raise_on_error, context=context)
-        else:
-            # Unconstrained TypeVar: treat as Any
-            return CheckResult(IS_VALID, is_immutable(obj))
+        # Unconstrained TypeVar: treat as Any
+        return CheckResult(IS_VALID, is_immutable(obj))
 
     if obj is None:
         return _check_none_instance_of_typehint(obj, type_hint, origin, args, options, new_parents, raise_on_error)
-    elif type_hint in {None, NoneType}:
+
+    if type_hint in {None, NoneType}:
         log.debug(
             "_check_instance_of_typehint: Object of type '%s' does not match NoneType type hint",
             type(obj).__name__)
@@ -393,6 +395,7 @@ def _check_instance_of_typehint(
 
     return result
 
+
 def _check_none_instance_of_typehint(
         obj: Any,
         type_hint: Any,
@@ -451,6 +454,7 @@ def _check_none_instance_of_typehint(
 
     return check_result
 
+
 def _is_subtype_of_typehint(subtype: Any, basetype: Any) -> bool:
     """
     Checks if a given type is a subtype of or compatible with a base type.
@@ -476,7 +480,7 @@ def _is_subtype_of_typehint(subtype: Any, basetype: Any) -> bool:
     # Case 1: Simple, non-generic types (int, str, etc.)
     if origin_subtype is None and origin_basetype is None:
         if not isinstance(subtype, type) or not isinstance(basetype, type):
-            return subtype == basetype # e.g. comparing Literals
+            return subtype == basetype  # e.g. comparing Literals
         return issubclass(subtype, basetype)
 
     # Case 2: Generic containers (list, set, sequence)
@@ -489,6 +493,7 @@ def _is_subtype_of_typehint(subtype: Any, basetype: Any) -> bool:
 
     # Fallback for non-matching structures
     return False
+
 
 def _is_new_type(tp: Any) -> bool:
     """Check if a type hint is a NewType definition."""

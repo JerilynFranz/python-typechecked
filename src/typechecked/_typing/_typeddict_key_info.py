@@ -7,7 +7,8 @@ about a TypedDict key's required/optional/readonly status and its contained type
 :property bool | None is_optional: True if NotRequired, False if Required, None if neither.
 :property bool is_readonly: True if ReadOnly, False otherwise.
 :property str key: The TypedDict key name.
-:property object value_type: The value type argument contained in Required/NotRequired/ReadOnly, or the original value type.
+:property object value_type: The value type argument contained in Required/NotRequired/ReadOnly,
+    or the original value type.
 """
 import sys
 from typing import get_args, get_origin

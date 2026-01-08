@@ -1,5 +1,6 @@
-from ._tagged_exception import TaggedException, generate_message
+"""TypeChecked ValueError exceptions."""
 from ._error_tag import ErrorTag
+from ._tagged_exception import TaggedException, generate_message
 
 
 class TypeCheckedValueError(TaggedException[ValueError], ValueError):
@@ -27,4 +28,3 @@ class TypeCheckedValueError(TaggedException[ValueError], ValueError):
         """
         message = generate_message(msg, tag)
         super().__init__(message, tag=tag)
-

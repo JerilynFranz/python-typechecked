@@ -1,9 +1,11 @@
 """TestSpec testing framework - assertion operators."""
+# pylint: disable=too-many-return-statements
 import logging
 from enum import Enum
 from typing import Any
 
 log = logging.getLogger(__name__)
+
 
 class Assert(str, Enum):
     """Enumeration of supported assertion operators.
@@ -68,6 +70,7 @@ def expected_argument_required(assertion: Assert) -> bool:
             return False
         case _:
             return True
+
 
 def validate_assertion(assertion: Assert, expected: Any, found: Any) -> str:
     """Helper function to perform an assertion check.

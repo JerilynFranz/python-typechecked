@@ -1,13 +1,13 @@
+"""Tests for assertion validation logic."""
 import logging
 from dataclasses import dataclass
 from typing import Any
 
 import pytest
-
-log = logging.getLogger(__name__)
-
 from testspec import Assert, TestSpec, idspec
 from testspec.assertions import validate_assertion
+
+log = logging.getLogger(__name__)
 
 
 @dataclass
@@ -21,7 +21,6 @@ class AssertTest(TestSpec):
 
     def run(self) -> None:
         """Dummy run method for AssertTest."""
-        pass
 
 
 @pytest.mark.parametrize("test_case", [
@@ -36,7 +35,8 @@ class AssertTest(TestSpec):
     idspec('ASSERT_009', AssertTest('IS None is None, True', Assert.IS, None, None, True)),
     idspec('ASSERT_010', AssertTest('IS_NOT None is not 5, True', Assert.IS_NOT, None, 5, True)),
     idspec('ASSERT_011', AssertTest('ISINSTANCE 5 is instance of int, True', Assert.ISINSTANCE, int, 5, True)),
-    idspec('ASSERT_012', AssertTest('ISSUBCLASS ValueError is subclass of Exception, True', Assert.ISSUBCLASS, Exception, ValueError, True)),
+    idspec('ASSERT_012', AssertTest('ISSUBCLASS ValueError is subclass of Exception, True',
+                                    Assert.ISSUBCLASS, Exception, ValueError, True)),
     idspec('ASSERT_013', AssertTest('IS_NONE None is None, True', Assert.IS_NONE, None, None, True)),
     idspec('ASSERT_014', AssertTest('IS_NOT_NONE None is not 5, True', Assert.IS_NOT_NONE, None, 5, True)),
     idspec('ASSERT_015', AssertTest('TRUE, True', Assert.TRUE, None, True, True)),
@@ -54,7 +54,8 @@ class AssertTest(TestSpec):
     idspec('ASSERT_026', AssertTest('IS None is 5, False', Assert.IS, None, 5, False)),
     idspec('ASSERT_027', AssertTest('IS_NOT None is not None, False', Assert.IS_NOT, None, None, False)),
     idspec('ASSERT_028', AssertTest('ISINSTANCE 5 is instance of str, False', Assert.ISINSTANCE, int, '5', False)),
-    idspec('ASSERT_029', AssertTest('ISSUBCLASS Exception is subclass of int, False', Assert.ISSUBCLASS, Exception, int, False)),
+    idspec('ASSERT_029', AssertTest('ISSUBCLASS Exception is subclass of int, False',
+                                    Assert.ISSUBCLASS, Exception, int, False)),
     idspec('ASSERT_030', AssertTest('IS_NONE None is None, False', Assert.IS_NONE, None, 5, False)),
     idspec('ASSERT_031', AssertTest('IS_NOT_NONE None is not None, False', Assert.IS_NOT_NONE, None, None, False)),
     idspec('ASSERT_032', AssertTest('TRUE True, False', Assert.TRUE, None, False, False)),

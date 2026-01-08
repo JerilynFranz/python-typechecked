@@ -1,5 +1,5 @@
 """Tests for type hint validation functions."""
-# pylint: disable=import-error,wrong-import-position,unused-import
+# pylint: disable=import-error,wrong-import-position,unused-import,too-many-lines
 import enum
 import logging
 import sys
@@ -10,7 +10,6 @@ from typing import (
     Any,
     Callable,
     Final,
-    Generic,
     Literal,
     NewType,
     Optional,
@@ -20,9 +19,10 @@ from typing import (
     runtime_checkable,
 )
 
-T = TypeVar('T')
-
 import pytest
+from testspec import Assert, TestAction, TestSpec, idspec
+
+from typechecked import clear_typechecked_cache, isinstance_of_typehint
 
 if sys.version_info >= (3, 11):
     from typing import Never, NotRequired, Required
@@ -44,11 +44,9 @@ else:
             "TypeChecked requires 'typing_extensions' for Python < 3.13 "
             "to support ReadOnly.") from e
 
+T = TypeVar('T')
+
 log = logging.getLogger(__name__)
-
-from testspec import Assert, TestAction, TestSpec, idspec
-
-from typechecked import clear_typechecked_cache, isinstance_of_typehint
 
 
 @pytest.mark.parametrize('typespec', [
@@ -219,6 +217,7 @@ def literals_typespecs() -> list[TestSpec]:
             args=[Color.GREEN, Literal[Color.RED]],
             assertion=Assert.FALSE)),
     ]
+
 
 @pytest.mark.parametrize('typespec', literals_typespecs())
 def test_literals(typespec: TestSpec) -> None:
@@ -667,6 +666,7 @@ def typeddict_testspec() -> list[TestSpec]:
 
     return testspecs
 
+
 @pytest.mark.parametrize('typespec', typeddict_testspec())
 def test_typeddict(typespec: TestSpec) -> None:
     """Test TypedDict types."""
@@ -727,9 +727,9 @@ def newtype_testspec() -> list[TestSpec]:
             name="NewInt(5) is an int",
             action=isinstance_of_typehint, args=[NewInt(5), int],
             assertion=Assert.TRUE)),
-            # Wierd true fact! NewType types are a 'noop' at runtime:
-            # It returns the original object unchanged. The most we can do is check
-            # is that the value is compatible with the underlying type.
+        # Wierd true fact! NewType types are a 'noop' at runtime:
+        # It returns the original object unchanged. The most we can do is check
+        # is that the value is compatible with the underlying type.
         idspec('NEWTYPE_003', TestAction(
             name="5 is compatible with a NewType of int",
             action=isinstance_of_typehint, args=[5, NewInt],
@@ -740,6 +740,7 @@ def newtype_testspec() -> list[TestSpec]:
             assertion=Assert.FALSE)),
     ]
     return testspecs
+
 
 @pytest.mark.parametrize('testspec', newtype_testspec())
 def test_newtype(testspec: TestSpec) -> None:
@@ -773,6 +774,7 @@ def test_final_typehint(testspec: TestSpec) -> None:
     clear_typechecked_cache()
     testspec.run()
 
+
 def userclass_testspecs() -> list:
     """Test that user-defined class instances are correctly identified."""
 
@@ -796,6 +798,7 @@ def userclass_testspecs() -> list:
             assertion=Assert.FALSE)),
     ]
     return testspecs
+
 
 @pytest.mark.parametrize('testspec', userclass_testspecs())
 def test_userclass_instance(testspec: TestSpec) -> None:
@@ -821,12 +824,12 @@ def nested_types_testspecs() -> list[TestSpec]:
     ]
     return testspecs
 
+
 @pytest.mark.parametrize('testspec', nested_types_testspecs())
 def test_nested_types(testspec: TestSpec) -> None:
     """Test nested type hints."""
     clear_typechecked_cache()
     testspec.run()
-
 
 
 def enum_testspecs() -> list[TestSpec]:
@@ -857,6 +860,7 @@ def enum_testspecs() -> list[TestSpec]:
             assertion=Assert.FALSE)),
     ]
     return testspecs
+
 
 @pytest.mark.parametrize('testspec', enum_testspecs())
 def test_enum_typehint(testspec: TestSpec) -> None:
@@ -952,11 +956,13 @@ def callable_testspecs() -> list[TestSpec]:
     ]
     return testspecs
 
+
 @pytest.mark.parametrize('testspec', callable_testspecs())
 def test_callable_typehint(testspec: TestSpec) -> None:
     """Test Callable typehint."""
     clear_typechecked_cache()
     testspec.run()
+
 
 def generic_sequence_subclass_testspecs() -> list[TestSpec]:
     """Test generic subclasses of Sequence."""
@@ -966,9 +972,11 @@ def generic_sequence_subclass_testspecs() -> list[TestSpec]:
         def __init__(self, data):
             """Initialize with a list of integers."""
             self._data = list(data)
+
         def __getitem__(self, idx):
             """Get item at index."""
             return self._data[idx]
+
         def __len__(self):
             """Get length of the sequence."""
             return len(self._data)
@@ -978,9 +986,11 @@ def generic_sequence_subclass_testspecs() -> list[TestSpec]:
         def __init__(self, data):
             """Initialize with a list of strings."""
             self._data = list(data)
+
         def __getitem__(self, idx):
             """Get item at index."""
             return self._data[idx]
+
         def __len__(self):
             """Get length of the sequence."""
             return len(self._data)
@@ -1016,11 +1026,13 @@ def generic_sequence_subclass_testspecs() -> list[TestSpec]:
     ]
     return testspecs
 
+
 @pytest.mark.parametrize('testspec', generic_sequence_subclass_testspecs())
 def test_generic_sequence_subclass(testspec: TestSpec) -> None:
     """Test generic subclasses of Sequence."""
     clear_typechecked_cache()
     testspec.run()
+
 
 @pytest.mark.parametrize('testspec', [
     idspec('ANY_001', TestAction(
@@ -1048,6 +1060,7 @@ def test_any_typehint(testspec: TestSpec) -> None:
     """Test Any typehint."""
     clear_typechecked_cache()
     testspec.run()
+
 
 @pytest.mark.parametrize('testspec', [
     idspec('HASHABLE_001', TestAction(
@@ -1084,6 +1097,7 @@ def test_hashable_typehint(testspec: TestSpec) -> None:
     clear_typechecked_cache()
     testspec.run()
 
+
 def protocols_testspecs() -> list[TestSpec]:
     """Tests for protocols."""
 
@@ -1114,6 +1128,7 @@ def protocols_testspecs() -> list[TestSpec]:
         def foo_with_sunglasses(self) -> int:
             """foo method (in disguise) implementation"""
             return 99
+
         def bar_with_sunglasses(self) -> str:
             """bar method (in disguise)"""
             return 'extra'
@@ -1125,6 +1140,7 @@ def protocols_testspecs() -> list[TestSpec]:
         def bar_with_sunglasses(self) -> str:
             """A method that returns a string."""
             ...  # pylint: disable=unnecessary-ellipsis
+
         def proto(self) -> MyCheckableProtocol:
             """A method that returns an instance of MyCheckableProtocol."""
             ...  # pylint: disable=unnecessary-ellipsis
@@ -1134,6 +1150,7 @@ def protocols_testspecs() -> list[TestSpec]:
         def bar_with_sunglasses(self) -> str:
             """Implementation of bar method."""
             return 'nested'
+
         def proto(self) -> MyProtocolImpl:
             """Implementation of proto method."""
             return MyProtocolImpl()
@@ -1181,11 +1198,13 @@ def protocols_testspecs() -> list[TestSpec]:
     ]
     return testspecs
 
+
 @pytest.mark.parametrize('testspec', protocols_testspecs())
 def test_protocols(testspec: TestSpec) -> None:
     """Tests for protocols."""
     clear_typechecked_cache()
     testspec.run()
+
 
 def recursive_protocol_testspecs() -> list[TestSpec]:
     """Test recursive Protocols."""
@@ -1196,6 +1215,7 @@ def recursive_protocol_testspecs() -> list[TestSpec]:
         def value(self) -> int:
             """Value method."""
             ...  # pylint: disable=unnecessary-ellipsis
+
         def next(self) -> 'NodeProtocol | None':
             """Next method."""
             ...  # pylint: disable=unnecessary-ellipsis
@@ -1206,9 +1226,11 @@ def recursive_protocol_testspecs() -> list[TestSpec]:
             """Initialize Node with value and next node."""
             self._val = val
             self._next = next_node
+
         def value(self) -> int:
             """Value method."""
             return self._val
+
         def next(self):
             """Next method."""
             return self._next
@@ -1227,9 +1249,11 @@ def recursive_protocol_testspecs() -> list[TestSpec]:
         def left(self) -> 'TreeProtocol | None':
             """left child"""
             ...  # pylint: disable=unnecessary-ellipsis
+
         def right(self) -> 'TreeProtocol | None':
             """right child"""
             ...  # pylint: disable=unnecessary-ellipsis
+
         def data(self) -> int:
             """data stored in the node"""
             ...  # pylint: disable=unnecessary-ellipsis
@@ -1241,12 +1265,15 @@ def recursive_protocol_testspecs() -> list[TestSpec]:
             self._data = data
             self._left = left
             self._right = right
+
         def left(self):
             """Left child."""
             return self._left
+
         def right(self):
             """Right child."""
             return self._right
+
         def data(self):
             """Data stored in the node."""
             return self._data
@@ -1300,11 +1327,13 @@ def recursive_protocol_testspecs() -> list[TestSpec]:
     ]
     return testspecs
 
+
 @pytest.mark.parametrize('testspec', recursive_protocol_testspecs())
 def test_recursive_protocols(testspec: TestSpec) -> None:
     """Test recursive Protocols."""
     clear_typechecked_cache()
     testspec.run()
+
 
 @pytest.mark.parametrize('testspec', [
     idspec('OPTIONAL_001', TestAction(
@@ -1355,7 +1384,7 @@ def test_optional_typehint(testspec: TestSpec) -> None:
         name='[1, 2] is not Union[int, str]',
         action=isinstance_of_typehint, args=[[1, 2], int | str],
         assertion=Assert.FALSE)),
-        idspec('UNION_006', TestAction(
+    idspec('UNION_006', TestAction(
         name='1 is Union[int, Any]',
         action=isinstance_of_typehint, args=[1, int | Any],
         assertion=Assert.TRUE)),
@@ -1428,6 +1457,7 @@ def test_typevar_typehint(testspec: TestSpec) -> None:
     clear_typechecked_cache()
     testspec.run()
 
+
 @pytest.mark.parametrize('testspec', [
     idspec('ANY_001', TestAction(
         name='1 is an Any',
@@ -1466,6 +1496,7 @@ def test_any_typehint_various(testspec: TestSpec) -> None:
     """Test various uses of Any in type hints."""
     clear_typechecked_cache()
     testspec.run()
+
 
 @pytest.mark.parametrize('testspec', [
     idspec('NEVER_001', TestAction(

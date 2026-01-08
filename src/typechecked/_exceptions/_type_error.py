@@ -1,5 +1,7 @@
-from ._tagged_exception import TaggedException, generate_message
+"""TypeChecked TypeError exceptions."""
 from ._error_tag import ErrorTag
+from ._tagged_exception import TaggedException, generate_message
+
 
 class TypeCheckedTypeError(TaggedException[TypeError], TypeError):
     """Base class for all TypeChecked TypeErrors.

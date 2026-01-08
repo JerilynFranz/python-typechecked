@@ -1,17 +1,17 @@
-"""Cache for validation results.
-"""
+"""Cache for validation results."""
 import logging
 import threading
 from collections import OrderedDict
-from typing import Any, Hashable
+from collections.abc import Hashable
+from typing import Any
 
 from .._exceptions import TypeCheckedTypeError, TypeCheckedValueError
-
 from ._cache_entry import CacheEntry, ObjectWrapper
 from ._cache_key import CacheKey
 from ._error_tags import ValidationCacheErrorTag
 
 log = logging.getLogger(__name__)
+
 
 class ValidationCache:
     """Cache for validated references.
@@ -25,7 +25,7 @@ class ValidationCache:
     """
     def __init__(self, min_cache_size: int = 100, max_cache_size: int = 16384) -> None:
         """Initialize the ValidationCache.
-        
+
         :param int min_cache_size: Minimum size of the cache.
             This is the smallest allowed size after trimming to ensure effective caching.
             Do not set below about 100 to ensure reasonable cache effectiveness.
@@ -91,8 +91,12 @@ class ValidationCache:
                 return None
         return None
 
-    def add_cache_entry(self,
-            td_cls: Hashable, obj: object, is_valid: bool, noncachable_types: set[type[Any]] | None = None) -> None:
+    def add_cache_entry(
+            self,
+            td_cls: Hashable,
+            obj: object,
+            is_valid: bool,
+            noncachable_types: set[type[Any]] | None = None) -> None:
         """Cache a CacheEntry
 
         :param Hashable td_cls: The type hint of the object.

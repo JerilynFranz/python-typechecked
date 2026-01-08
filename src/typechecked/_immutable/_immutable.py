@@ -1,4 +1,5 @@
 """Module for immutable validation functions."""
+# pylint: disable=too-many-return-statements
 from dataclasses import is_dataclass
 from enum import Enum
 from types import MappingProxyType, NoneType
@@ -18,6 +19,7 @@ __all__ = (
     "ImmutableTypedDict",
 )
 
+
 class NoAttrSentinel:
     """Sentinel class to represent absence of an attribute."""
 
@@ -27,6 +29,7 @@ NO_ATTR = NoAttrSentinel()
 IMMUTABLE_PRIMITIVE_TYPES_TUPLE: tuple[type, ...] = (int, float, complex, bool, str, bytes, NoneType, Enum, range)
 IMMUTABLE_CONTAINER_TYPES_TUPLE: tuple[type, ...] = (tuple, frozenset, MappingProxyType)
 IMMUTABLE_PRIMITIVE_TYPES_SET: set[type] = set(IMMUTABLE_PRIMITIVE_TYPES_TUPLE)
+
 
 def validate_immutable(obj: Any, name: str, message: str | None = None, depth: int = 200) -> bool:
     """Validate that the given object is immutable.
@@ -49,14 +52,15 @@ def validate_immutable(obj: Any, name: str, message: str | None = None, depth: i
         raise TypeCheckedTypeError("The 'name' parameter must be a string.",
                                    tag=ImmutableErrorTag.NAME_NOT_STRING)
     if name.strip() == "":
-        raise TypeCheckedValueError("The 'name' parameter must be a non-blank string.",
-                                   tag=ImmutableErrorTag.NAME_IS_EMPTY_OR_BLANK_STRING)
+        raise TypeCheckedValueError(
+            "The 'name' parameter must be a non-blank string.",
+            tag=ImmutableErrorTag.NAME_IS_EMPTY_OR_BLANK_STRING)
     if not isinstance(depth, int):
         raise TypeCheckedTypeError("The 'depth' parameter must be an integer.",
                                    tag=ImmutableErrorTag.DEPTH_NOT_INTEGER)
     if depth <= 0:
         raise TypeCheckedValueError("The 'depth' parameter must be a positive integer.",
-                                   tag=ImmutableErrorTag.DEPTH_NOT_POSITIVE_INTEGER)
+                                    tag=ImmutableErrorTag.DEPTH_NOT_POSITIVE_INTEGER)
     if message is not None and not isinstance(message, str):
         raise TypeCheckedTypeError("The 'message' parameter must be a string if provided.",
                                    tag=ImmutableErrorTag.MESSAGE_NOT_STRING)
@@ -67,6 +71,7 @@ def validate_immutable(obj: Any, name: str, message: str | None = None, depth: i
                                    tag=ImmutableErrorTag.OBJECT_NOT_IMMUTABLE)
     return True
 
+
 def is_immutable(obj: Any, depth: int = 200) -> bool:
     """Check if the given object is immutable.
 
@@ -76,6 +81,7 @@ def is_immutable(obj: Any, depth: int = 200) -> bool:
     :return bool: True if the object is immutable, False otherwise.
     """
     return _is_immutable(obj, parents=set(), depth=depth)
+
 
 def _is_immutable(obj: Any, parents: set[int], depth: int) -> bool:
     """Helper function to check if the given object is immutable.
@@ -99,7 +105,7 @@ def _is_immutable(obj: Any, parents: set[int], depth: int) -> bool:
     immutable: bool = False
 
     # Directly immutable types
-    if isinstance(obj, Immutable) or isinstance(obj, IMMUTABLE_PRIMITIVE_TYPES_TUPLE):
+    if isinstance(obj, Immutable) or isinstance(obj, IMMUTABLE_PRIMITIVE_TYPES_TUPLE):  # pylint: disable=R1701
         immutable = True
 
     # Immutable container types

@@ -2,13 +2,12 @@
 from collections.abc import Mapping
 from typing import Any
 
-from .._exceptions import TypeCheckedTypeError, TypeCheckedValueError
 from .. import Immutable
-
 from .._cache import _CACHE
 from .._check_result import CheckResult
 from .._constants import IS_IMMUTABLE, IS_VALID, NOT_IMMUTABLE, NOT_VALID
 from .._error_tags import TypeHintsErrorTag
+from .._exceptions import TypeCheckedTypeError, TypeCheckedValueError
 from .._log import log
 from .._options import Options
 from .._validation_state import ValidationState
@@ -17,7 +16,8 @@ __all__ = (
     "_check_collections_abc_mapping",
 )
 
-def _check_collections_abc_mapping(
+
+def _check_collections_abc_mapping(  # pylint: disable=too-many-locals
         obj: Any,
         type_hint: Any,
         origin: Any,

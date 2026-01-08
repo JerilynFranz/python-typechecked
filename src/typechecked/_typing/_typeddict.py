@@ -28,7 +28,8 @@ __all__ = (
     "_check_typing_typeddict",
 )
 
-def _check_typing_typeddict(
+
+def _check_typing_typeddict(  # pylint: disable=too-many-locals,too-many-return-statements  # noqa: C901
         obj: Any,
         type_hint: Any,
         options: Options,
@@ -144,7 +145,7 @@ def _check_typing_typeddict(
                     "_container_check_typeddict: Validation failed due to extra key '%s' in TypedDict object.", key)
                 return CheckResult(NOT_VALID, NOT_IMMUTABLE)
 
-    else: # Extra items allowed, check their types
+    else:  # Extra items allowed, check their types
         for key, value in obj.items():
             if key not in allowed_keys:
                 check_result = _check_instance_of_typehint(
@@ -200,8 +201,8 @@ def _check_typing_typeddict(
             log.debug(
                 "_container_check_typeddict: Checking key '%s', value '%s in TypedDict object against type hint '%s'",
                 key, value, value_type)
-            check_result = _check_instance_of_typehint(value, value_type, options, new_parents,
-                                raise_on_error=False, context="typeddict_value")
+            check_result = _check_instance_of_typehint(
+                value, value_type, options, new_parents, raise_on_error=False, context="typeddict_value")
             if not check_result.valid:
                 log.debug(
                     "_container_check_typeddict: Key '%s' in TypedDict object does not match "

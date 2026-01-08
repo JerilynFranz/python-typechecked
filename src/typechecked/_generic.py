@@ -5,7 +5,7 @@ from typing import Any, Protocol
 
 from ._cache import _CACHE
 from ._check_result import CheckResult
-from ._constants import IS_IMMUTABLE, IS_VALID, NOT_IMMUTABLE, NOT_VALID
+from ._constants import IS_IMMUTABLE, IS_VALID, NOT_VALID
 from ._error_tags import TypeHintsErrorTag
 from ._exceptions import TypeCheckedTypeError
 from ._immutable import is_immutable
@@ -36,7 +36,8 @@ __all__ = (
     "_check_generic",
 )
 
-def _check_generic(
+
+def _check_generic(  # pylint: disable=too-many-locals,too-many-return-statements  # noqa: C901
         obj: Any,
         type_hint: Any,
         origin: Any,
@@ -66,8 +67,6 @@ def _check_generic(
         _check_collections_abc_sequence,
         _check_collections_abc_set,
     )
-    from ._type_hints import _check_instance_of_typehint  # pylint: disable=import-outside-toplevel
-    from ._typing import _check_typing_typeddict  # pylint: disable=import-outside-toplevel
 
     # Check the cache first
     cached_result = _CACHE.valid_in_cache(type_hint, obj)
@@ -85,8 +84,8 @@ def _check_generic(
 
     # handler for non-runtime Protocols
     if (hasattr(type_hint, '__mro__')
-        and any(base is Protocol for base in type_hint.__mro__)
-        and not getattr(type_hint, '_is_runtime_protocol', False)):
+            and any(base is Protocol for base in type_hint.__mro__)
+            and not getattr(type_hint, '_is_runtime_protocol', False)):
         if raise_on_error:
             raise TypeCheckedTypeError(
                 f'Protocol {type_hint} is not runtime checkable.',
@@ -102,7 +101,7 @@ def _check_generic(
             log.debug("_check_generic: Detected Iterable type hint '%s'", type_hint)
             origin = type_hint
             args = (Any,)
-        elif issubclass(type_hint, Callable):
+        elif issubclass(type_hint, Callable):  # type: ignore[arg-type]
             log.debug("_check_generic: Detected Callable type hint '%s'", type_hint)
             origin = type_hint
             args = (..., Any)
@@ -164,7 +163,7 @@ def _check_generic(
         # Fast fail path for collections.abc
         is_collections_abc: bool
         try:
-            is_collections_abc = issubclass(origin, (Iterable, Callable))
+            is_collections_abc = issubclass(origin, (Iterable, Callable))  # type: ignore[arg-type]
         except TypeError:
             is_collections_abc = False
 
@@ -188,7 +187,7 @@ def _check_generic(
             elif issubclass(origin, Iterable):
                 result = _check_collections_abc_iterable(
                     obj, type_hint, origin, args, options, new_parents, raise_on_error)
-            elif issubclass(origin, Callable):
+            elif issubclass(origin, Callable):  # type: ignore[arg-type]
                 result = _check_collections_abc_callable(
                     obj, type_hint, origin, args, raise_on_error)
 

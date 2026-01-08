@@ -2,12 +2,11 @@
 from types import UnionType
 from typing import Any, Union
 
-from .._exceptions import TypeCheckedTypeError, TypeCheckedValueError
-
 from .._cache import _CACHE
 from .._check_result import CheckResult
 from .._constants import NOT_VALID
 from .._error_tags import TypeHintsErrorTag
+from .._exceptions import TypeCheckedTypeError, TypeCheckedValueError
 from .._immutable import is_immutable
 from .._log import log
 from .._options import Options
@@ -17,6 +16,7 @@ __all__ = (
     "_check_typing_union",
 )
 
+
 def _check_typing_union(
         obj: Any,
         type_hint: Any,
@@ -25,8 +25,8 @@ def _check_typing_union(
         options: Options,
         parents: set[ValidationState],
         raise_on_error: bool = False) -> CheckResult:
-    """Handle Union types first as an exclusive check. 
-    
+    """Handle Union types first as an exclusive check.
+
     :param Any obj: The object to check.
     :param Any type_hint: The type hint to check against.
     :param tuple args: The type arguments of the Union type hint.
@@ -40,7 +40,7 @@ def _check_typing_union(
     from .._type_hints import _check_instance_of_typehint  # pylint: disable=import-outside-toplevel
 
     log.debug("_union_check: Checking object of type '%s' against Union type hint '%s'",
-                type(obj).__name__, type_hint)
+              type(obj).__name__, type_hint)
     if origin not in (Union, UnionType):  # Sanity check for bad calls
         raise TypeCheckedValueError(
             f"Type hint '{type_hint}' is not a Union type.",

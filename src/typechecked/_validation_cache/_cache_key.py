@@ -1,5 +1,6 @@
 """Cache key for object references."""
 from collections.abc import Hashable
+from types import NoneType
 from typing import Any
 
 
@@ -11,7 +12,7 @@ class CacheKey:
     They uniquely identify a specific object instance + a specific type
     for caching purposes. The type is included to allow caching of the same
     object instance under different type contexts.
-    
+
     A weak reference is used to allow garbage collection
     of the cached value when no longer in use. A callback is registered to
     automatically remove the cache entry when the value is garbage collected.
@@ -19,15 +20,15 @@ class CacheKey:
     :property type cls_type: The type of the object.
     :property int instance_id: The id() of the object instance.
     """
-    def __init__(self, cls_type: Hashable | type[None] | None, obj: Any) -> None:
+    def __init__(self, cls_type: Hashable | NoneType | None, obj: Any) -> None:  # type: ignore[valid-type]
         """Initialize the CacheKey.
 
-        :param Hashable cls_type: The type of the object.
+        :param Hashable | NoneType | None cls_type: The type of the object.
         :param Any obj: The object value.
         """
-        if cls_type is None:  # None is a special case, replace with type(None) instead
-            cls_type = type(None)
-        self.obj_type: Hashable = cls_type
+        if cls_type is None:  # None is a special case, replace with NoneType instead
+            cls_type = NoneType  # type: ignore[assignment]
+        self.obj_type: Hashable | NoneType = cls_type  # type: ignore[valid-type]
         self.instance_id: int = id(obj)
 
     def __hash__(self) -> int:

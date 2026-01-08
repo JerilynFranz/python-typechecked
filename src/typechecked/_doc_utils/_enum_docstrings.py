@@ -63,7 +63,7 @@ def enum_docstrings(enum: type[E]) -> type[E]:
                     continue
 
                 case ast.Expr(
-                    value=ast.Constant(value=str(docstring))
+                    value=ast.Constant(value=str(docstring))  # pylint: disable=R1905
                 ) if member and unassigned(member.__doc__):
                     # docstring immediately following a member assignment
                     member.__doc__ = docstring

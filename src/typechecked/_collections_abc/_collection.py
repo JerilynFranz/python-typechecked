@@ -17,6 +17,7 @@ __all__ = (
     "_check_collections_abc_collection",
 )
 
+
 def _check_collections_abc_collection(
         obj: Any,
         type_hint: Any,

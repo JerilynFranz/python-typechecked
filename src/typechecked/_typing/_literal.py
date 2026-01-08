@@ -12,6 +12,7 @@ __all__ = (
     "_check_typing_literal",
 )
 
+
 def _check_typing_literal(
         obj: Any,
         type_hint: Any,
@@ -19,7 +20,7 @@ def _check_typing_literal(
         args: tuple,
         raise_on_error: bool = False) -> CheckResult:
     """Handle Literal types.
-    
+
     :param Any obj: The object to check.
     :param Any type_hint: The type hint to check against.
     :param Any origin: The origin type of the type hint.

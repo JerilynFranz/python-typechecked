@@ -36,7 +36,7 @@ For example:
     class ImmutablePoint2D(ImmutableTypedDict):
         x: float
         y: float
-    
+
 This indicates that ImmutablePoint2D is an immutable version of Point2D
 and should be treated as such during validation and serialization.
 
@@ -53,8 +53,8 @@ so they are automatically recognized.
 """
 import sys
 from abc import ABCMeta
+from enum import Enum
 from typing import Protocol, TypedDict, cast, runtime_checkable
-
 
 if sys.version_info >= (3, 11):
     from typing import NotRequired
@@ -109,6 +109,7 @@ class ImmutableSentinel:
         """
         raise TypeError("ImmutableSentinel is a sentinel type and cannot be instantiated.")
 
+
 @runtime_checkable
 class Immutable(Protocol):
     """Protocol for user defined immutable types.
@@ -136,7 +137,7 @@ class Immutable(Protocol):
     .. code-block:: python
 
         from typechecked.types import Immutable
-    
+
         class Point2D:
             def __init__(self, x: float, y: float) -> None:
                 self._x = x
@@ -160,17 +161,17 @@ class Immutable(Protocol):
 
         class ImmutablePoint2D(Point2D, Immutable):
             '''An immutable version of Point2D.
-            
+
             We inherit from Point2D to get the interface, and Immutable to mark it.
             We must override the setters to enforce immutability.
             '''
             def __init__(self, x: float, y: float) -> None:
                 super().__init__(x, y)
-            
+
             @property
             def x(self) -> float:
                 return self._x
-                
+
             @x.setter
             def x(self, value: float) -> None:
                 raise AttributeError("Cannot modify immutable instance.")
@@ -202,7 +203,7 @@ class Immutable(Protocol):
 
     It uses the existence of an `__immutable__` attribute to mark a user-defined class
     as immutable for validation purposes.
-    
+
     Additionally, the following built-in immutable types are explicitly registered as
     virtual subclasses of this protocol:
     `bool`, `int`, `float`, `complex`, `str`, `bytes`, and `type(None)`.
@@ -230,6 +231,7 @@ class Immutable(Protocol):
                 return True
         return NotImplemented
 
+
 class ImmutableTypedDict(TypedDict):
     """TypedDict subclass to mark a TypedDict as immutable.
 
@@ -245,7 +247,7 @@ class ImmutableTypedDict(TypedDict):
         of the user to ensure they are not modified after creation. This class does not prevent
         runtime modification; its primary purpose is to help static type checkers and validation
         tools to detect and flag such misuse.
-        
+
         The runtime enforcement of immutability is outside the scope of this class, though
         it can be implemented separately using a wrapper, proxy, or 'mimic' class that
         structurally matches the TypedDict but is not a regular Python dict if desired.
@@ -283,6 +285,7 @@ class ImmutableTypedDict(TypedDict):
     type hinting purposes and the sentinel type cannot be instantiated.
     """
 
+
 # Register built-in immutable types so they pass isinstance(x, Immutable) checks
-for _t in (bool, int, float, complex, str, bytes, type(None)):
+for _t in (bool, int, float, complex, str, bytes, type(None), Enum, range):
     cast(ABCMeta, Immutable).register(_t)

@@ -16,9 +16,10 @@ __all__ = (
 ImmutablePrimitiveTypes: TypeAlias = int | str | bytes | bool | float | complex | type[None] | range | Enum
 """Type alias for primitive data types."""
 
-ImmutablePrimitiveTypesTuple: tuple[type[int] | type[str] | type[bytes]  # pylint: disable=invalid-name
-        | type[bool] | type[float] | type[complex] | type[None] | type[range] | type[Enum], ...] = (
-            int, str, bytes, bool, float, complex, NoneType, range, Enum)
+ImmutablePrimitiveTypesTuple: tuple[  # pylint: disable=invalid-name
+    type[int] | type[str] | type[bytes]
+    | type[bool] | type[float] | type[complex] | type[None] | type[range] | type[Enum], ...] = (
+    int, str, bytes, bool, float, complex, NoneType, range, Enum)
 """Tuple of primitive data types for isinstance checks."""
 
 IMMUTABLE_PRIMITIVE_TYPES_SET: set[Any] = set(ImmutablePrimitiveTypesTuple)
@@ -42,6 +43,7 @@ def _is_primitive_typehint(type_hint: Any) -> bool:
     if type_hint is None:
         type_hint = NoneType
     return type_hint in IMMUTABLE_PRIMITIVE_TYPES_SET
+
 
 def _is_primitive(obj: Any) -> bool:
     """

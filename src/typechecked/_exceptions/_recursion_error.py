@@ -9,7 +9,7 @@ class TypeCheckedRecursionError(TaggedException[RecursionError], RecursionError)
     Usage:
         raise TypeCheckedRecursionError("An error occurred",
                                         tag=MyErrorTags.SOME_ERROR)
-  
+
     :param str msg: The error message.
     :param ErrorTag tag: The tag code.
     """
