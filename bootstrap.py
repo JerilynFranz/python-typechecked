@@ -75,8 +75,6 @@ This script installs the following tools by default:
 - uv (for managing Python packages and dependencies)
 - tox (for running tests, linters, and building documentation)
 - tox-uv (to integrate uv with tox)
-- setuptools (for building and installing packages)
-- poetry (for dependency management and packaging)
  
 That is the minimum set of tools required to start development for this project.
 
@@ -210,8 +208,6 @@ BOOTSTRAP_MODULES: list[InstallSpec] = [
     InstallSpec(name="uv", version=">=0.9.18"),
     InstallSpec(name="tox", version=">=4.22.0"),
     InstallSpec(name="tox-uv", version=">=1.13.1"),
-    InstallSpec(name="setuptools", version=">=69.5.1"),
-    InstallSpec(name="poetry", version=">=2.2.1"),
 ]
 
 # --- Tool usage instructions template ---
