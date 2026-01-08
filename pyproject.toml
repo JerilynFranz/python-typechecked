@@ -131,7 +131,10 @@ base_python = ["python3.12"]
 dependency_groups = ["docs", "test"]
 extras = ["all"]
 allowlist_externals = ["sphinx-build"]
-commands = [["sphinx-build", "-b", "html", "docs_source/", "documentation/"]]
+commands = [
+    ["sphinx-apidoc", "--separate", "--remove-old", "--module-first", "-f", "-o", "docs_source/source", "src"],
+    ["sphinx-build", "-b", "html", "docs_source/", "documentation/"],
+]
 
 
 
