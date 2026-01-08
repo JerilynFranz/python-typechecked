@@ -94,15 +94,12 @@ def _check_generic(  # pylint: disable=too-many-locals,too-many-return-statement
 
     if origin is None and isinstance(type_hint, type):
         if issubclass(type_hint, Mapping):
-            log.debug("_check_generic: Detected Mapping type hint '%s'", type_hint)
             origin = type_hint
             args = (Any, Any)
         elif issubclass(type_hint, Iterable):
-            log.debug("_check_generic: Detected Iterable type hint '%s'", type_hint)
             origin = type_hint
             args = (Any,)
         elif issubclass(type_hint, Callable):  # type: ignore[arg-type]
-            log.debug("_check_generic: Detected Callable type hint '%s'", type_hint)
             origin = type_hint
             args = (..., Any)
 

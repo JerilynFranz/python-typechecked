@@ -3,8 +3,6 @@ from enum import Enum
 from types import NoneType
 from typing import Any, TypeAlias
 
-from ._log import log
-
 __all__ = (
     "ImmutablePrimitiveTypes",
     "ImmutablePrimitiveTypesTuple",
@@ -54,8 +52,6 @@ def _is_primitive(obj: Any) -> bool:
     :param Any obj: The object to check.
     :return bool: True if the object is a primitive data type, False otherwise.
     """
-    log.debug("_is_primitive: Checking if object of type '%s' isinstance of  '%s'",
-              type(obj).__name__, ImmutablePrimitiveTypesTuple)
     if obj is None:
         return True
     try:

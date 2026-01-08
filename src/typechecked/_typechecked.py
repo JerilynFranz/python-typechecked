@@ -242,37 +242,22 @@ def _check_instance_of_typehint(  # pylint: disable=too-many-return-statements  
     # Check the cache first
     cached_result = _CACHE.valid_in_cache(type_hint, obj)
     if cached_result is not None:  # Only cached if Immutable
-        log.debug(
-            "_check_instance_of_typehint: Cache hit for object of type '%s' and type hint '%s'",
-            type(obj).__name__, type_hint)
         if cached_result or not raise_on_error:
             return CheckResult(cached_result, IS_IMMUTABLE)
         raise TypeCheckedTypeError(
             f"Object of type '{type(obj).__name__}' is not an instance of type hint '{type_hint}'",
             tag=TypeHintsErrorTag.TYPE_HINT_MISMATCH)
 
-    log.debug(
-        "_check_instance_of_typehint: Cache miss for object of type '%s' and type hint '%s'",
-        type(obj).__name__, type_hint)
-
     # If we have hit the depth limit for the check,
     # Return Valid, but not Immutable (as we can't be sure)
     if options.depth < len(parents):
-        log.debug(
-            "_check_instance_of_typehint: Depth limit reached for object of type '%s' and type hint '%s'",
-            type(obj).__name__, type_hint)
         return CheckResult(IS_VALID, NOT_IMMUTABLE)
 
     origin = get_origin(type_hint)
     args = get_args(type_hint)
 
-    log.debug(
-        "_check_instance_of_typehint: Origin of type hint '%s' is '%s' with args '%s'",
-        type_hint, origin, args)
-
     current_state = ValidationState(id(obj), type_hint, context)
     if current_state in parents:
-        log.debug("_check_instance_of_typehint: Cycle detected for object of type '%s'", type(obj).__name__)
         if raise_on_error:
             raise TypeCheckedTypeError(
                 f"Cycle detected in object graph for object of type '{type(obj).__name__}'.",
@@ -284,7 +269,6 @@ def _check_instance_of_typehint(  # pylint: disable=too-many-return-statements  
     # Unwrap Final, ClassVar and Annotated type hints
     if origin is not None and origin.__module__ == 'typing':
         if origin.__name__ in {'Final', 'ClassVar', 'Annotated'}:
-            log.debug("_check_instance_of_typehint: Unwrapping %s type hint '%s'", origin.__name__, type_hint)
             if not args:
                 raise TypeCheckedValueError(
                     f"{origin.__name__} type hint '{type_hint}' has no arguments.",
@@ -295,21 +279,17 @@ def _check_instance_of_typehint(  # pylint: disable=too-many-return-statements  
     # Unwrap NewType definitions
     if _is_new_type(type_hint):
         supertype = type_hint.__supertype__
-        log.debug("_check_instance_of_typehint: Detected NewType '%s' with supertype '%s'",
-                  type_hint, supertype)
         if not isinstance(obj, supertype):
             if raise_on_error:
                 raise TypeCheckedTypeError(
                     f"Object of type '{type(obj).__name__}' is not an instance of NewType supertype '{supertype}'",
                     tag=TypeHintsErrorTag.TYPE_HINT_MISMATCH)
             return CheckResult(NOT_VALID, NOT_IMMUTABLE)
-        log.debug("_check_instance_of_typehint: Unwrapping NewType '%s' to supertype '%s'", type_hint, supertype)
         type_hint = supertype
         return _check_instance_of_typehint(obj, type_hint, options, new_parents, raise_on_error, context="root")
 
     # Handle TypeVar before generic/container checks and caching
     if isinstance(type_hint, TypeVar):
-        log.debug("_check_instance_of_typehint: Handling TypeVar '%s'", type_hint)
         if type_hint.__constraints__:
             # Accept if obj matches any constraint
             for constraint in type_hint.__constraints__:
@@ -328,19 +308,13 @@ def _check_instance_of_typehint(  # pylint: disable=too-many-return-statements  
         return _check_none_instance_of_typehint(obj, type_hint, origin, args, options, new_parents, raise_on_error)
 
     if type_hint in {None, NoneType}:
-        log.debug(
-            "_check_instance_of_typehint: Object of type '%s' does not match NoneType type hint",
-            type(obj).__name__)
         if raise_on_error:
             raise TypeCheckedTypeError(
                 f"Object of type '{type(obj).__name__}' is not None for type hint '{type_hint}'",
                 tag=TypeHintsErrorTag.TYPE_HINT_MISMATCH)
         return CheckResult(NOT_VALID, NOT_IMMUTABLE)
 
-    log.debug("_check_instance_of_typehint: Checking if type hint is Any (%s)", type_hint)
     if type_hint is Any:
-        log.debug(
-            "_check_instance_of_typehint: Type hint is Any, automatically valid")
         return CheckResult(IS_VALID, is_immutable(obj))
 
     # fast paths for primitives. Caching would be pointless here. It takes much more time to cache than to check.
@@ -349,29 +323,16 @@ def _check_instance_of_typehint(  # pylint: disable=too-many-return-statements  
         log.debug(
             "_check_instance_of_typehint: Type hint '%s' - checking if object is primitive type", type_hint)
         if isinstance(obj, (float, int, bool, complex, bytes, str)):
-            log.debug(
-                "_check_instance_of_typehint: Type hint '%s' is automatically valid for primitive objects of type '%s'",
-                type_hint, type(obj).__name__)
             return CheckResult(IS_VALID, IS_IMMUTABLE)
 
-    log.debug("_check_instance_of_typehint: Checking if type_hint '%s' is a primitive type hint", type_hint)
     if type_hint in {int, float, complex, bool, bytes, str}:
-        log.debug("_check_instance_of_typehint: Checking if object (%s) matches type hint for primitives check '%s'",
-                  type(obj).__name__, type_hint)
         if isinstance(obj, type_hint):
-            log.debug(
-                "_check_instance_of_typehint: Object of type '%s' matches primitive type hint '%s'",
-                type(obj).__name__, type_hint)
             return CheckResult(IS_VALID, IS_IMMUTABLE)
         if raise_on_error:
             raise TypeCheckedTypeError(
                 f"Object of type '{type(obj).__name__}' does not match primitive type hint '{type_hint}'",
                 tag=TypeHintsErrorTag.VALIDATION_FAILED)
         return CheckResult(NOT_VALID, IS_IMMUTABLE)
-
-    log.debug(
-        "_check_instance_of_typehint: Object of type '%s'' is not a primitive data type', proceeding with full check",
-        type(obj).__name__)
 
     if origin in (Union, UnionType):
         return _check_typing_union(obj, type_hint, origin, args, options, new_parents, raise_on_error)
@@ -416,8 +377,6 @@ def _check_none_instance_of_typehint(
     :param bool raise_on_error: Whether to raise an exception on validation failure.
     :return CheckResult: Tuple indicating (is_valid, is_immutable).
     """
-    log.debug(
-        "_check_none_instance_of_typehint: Checking None against type hint '%s'", type_hint)
     if obj is not None:  # Sanity check for bad calls
         raise TypeCheckedValueError(
             f"Object is not None, got '{obj}'.",
@@ -467,8 +426,6 @@ def _is_subtype_of_typehint(subtype: Any, basetype: Any) -> bool:
     :param Any basetype: The potential base type.
     :return bool: True if subtype is a subtype of basetype, False otherwise.
     """
-    log.debug("_is_subtype_of_typehint: Checking if '%s' is a subtype of '%s'", subtype, basetype)
-    # Handle origins and args
     origin_subtype = get_origin(subtype)
     args_subtype = get_args(subtype)
     origin_basetype = get_origin(basetype)
