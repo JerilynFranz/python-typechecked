@@ -179,16 +179,6 @@ BOOTSTRAP_MODULES: list[InstallSpec] = [
 # --- Tool usage instructions template ---
 
 TOOL_USAGE_INSTRUCTIONS = """
-
-You can now use the installed development tools within the activated virtual environment.
-
-"""
-
-# Example of tool usage instructions for tox and uv
-# (not actually run by the script, just included as an example
-# of how to use the 'TOOL_USAGE_INSTRUCTIONS' template)
-
-_TOX_AND_UV_TOOL_USAGE_INSTRUCTIONS_EXAMPLE = """
 You use 'tox' to run tasks that set up and manage the development environment,
 run tests, linters, and build documentation:
 
@@ -224,6 +214,16 @@ Examples:
   uv pip install 'package_name>=1.2.3'
 
 See https://docs.astral.sh/uv/ for more information on using 'uv'.
+
+If you are using VSCode, you can select the Python interpreter from the
+development virtual environment located in the 'venv' directory within the
+repository root after activating the environment with 'tox devenv -e dev'.
+
+Make sure to select the interpreter from the activated virtual environment
+so that VSCode uses the correct packages installed in that environment.
+
+If you are using another IDE or editor, refer to its documentation for selecting
+the Python interpreter from a virtual environment.
 """
 
 # --- Post-install instructions template ---
