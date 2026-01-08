@@ -33,7 +33,7 @@ Supported Typing Constructs
 - Specific types: list, dict, OrderedDict, frozenset, tuple, etc.
 - Generic aliases: list[int], dict[str, float], etc.
 - Tuple types: Tuple, tuple, Tuple[int, ...], Tuple[int, str], etc
-- Union types: Union, Optional, |, etc.
+- Union types: Union, Optional, ``|``, etc.
 - Final types: Final
 - TypeVar
 - NewType types: NewType
