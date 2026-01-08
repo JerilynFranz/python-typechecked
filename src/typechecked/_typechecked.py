@@ -10,7 +10,7 @@ from ._constants import IS_IMMUTABLE, IS_VALID, NOT_IMMUTABLE, NOT_VALID
 from ._error_tags import TypeHintsErrorTag
 from ._exceptions import TypeCheckedTypeError, TypeCheckedValueError
 from ._generic import _check_generic
-from ._immutable._immutable import is_immutable
+from ._immutable import is_immutable
 from ._log import log
 from ._options import Options
 from ._typing import _check_typing_literal, _check_typing_typeddict, _check_typing_union

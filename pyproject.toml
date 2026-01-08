@@ -285,7 +285,7 @@ format = "svg"
 max_bacon = 1
 max_cluster_size = 2
 max_module_depth = 5
-output = "docs/dependencies.svg"
+output = "docs_source/_static/images/dependencies.svg"
 reverse = true
 cluster = true
 rankdir = "BT"
@@ -293,5 +293,26 @@ no_show = true
 verbose = 0
 pylib = false
 exclude_exact = [
+    "typechecked._meta",
+    "typechecked._doc_utils",
+    "typechecked._error_tags",
+    "typechecked._exceptions",
+    "typechecked._check_result",
+    "typechecked._constants",
+    "typechecked._immutable._error_tags",
+    "typechecked._immutable._immutable",
+    "typechecked._immutable._protocol",
+    "typechecked._log",
+    "typechecked._meta",
+    "typechecked._options",
+    "typechecked._primitives",
+    "typechecked._typing._typeddict_key_info",
+    "typechecked._validate",
+    "typechecked._validation_cache",
+    "typechecked._validation_cache._cache_entry",
+    "typechecked._validation_cache._cache_key",
+    "typechecked._validation_cache._cache",
+    "typechecked._validation_cache._error_tags",
+    "typechecked._validation_state",
    
 ]
