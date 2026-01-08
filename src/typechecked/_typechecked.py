@@ -497,11 +497,4 @@ def _is_subtype_of_typehint(subtype: Any, basetype: Any) -> bool:
 
 def _is_new_type(tp: Any) -> bool:
     """Check if a type hint is a NewType definition."""
-    log.debug("_is_new_type: Checking if type hint '%s' is a NewType", tp)
-    log.debug("_is_new_type: Type hint '%s' is callable: %s", tp, callable(tp))
-    log.debug("_is_new_type: Type hint '%s' has __supertype__: %s", tp, hasattr(tp, '__supertype__'))
-    log.debug("_is_new_type: Type hint '%s' __annotations__: %s", tp, getattr(tp, '__annotations__', 'N/A'))
-    return (
-        callable(tp)
-        and hasattr(tp, '__supertype__')
-    )
+    return callable(tp) and hasattr(tp, '__supertype__')
