@@ -493,7 +493,7 @@ tag (ErrorTag): The tag code.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="typechecked.clear_typechecked_cache">
-<span class="sig-prename descclassname"><span class="pre">typechecked.</span></span><span class="sig-name descname"><span class="pre">clear_typechecked_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/typechecked/_type_hints.html#clear_typechecked_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typechecked.clear_typechecked_cache" title="Link to this definition">🔗</a></dt>
+<span class="sig-prename descclassname"><span class="pre">typechecked.</span></span><span class="sig-name descname"><span class="pre">clear_typechecked_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/typechecked/_typechecked.html#clear_typechecked_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typechecked.clear_typechecked_cache" title="Link to this definition">🔗</a></dt>
 <dd><p>Clear the internal type hint validation cache.</p>
 </dd></dl>
 
@@ -576,7 +576,7 @@ that inherits from ImmutableTypedDict.</p>
 <dd><em class="sig-param"><span class="n"><span class="pre">noncachable_types</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
 </dl>
 
-<span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/typechecked/_type_hints.html#isinstance_of_typehint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typechecked.isinstance_of_typehint" title="Link to this definition">🔗</a></dt>
+<span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/typechecked/_typechecked.html#isinstance_of_typehint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typechecked.isinstance_of_typehint" title="Link to this definition">🔗</a></dt>
 <dd><p>Check if an object is an instance of a given type hint.
 Supports basic types, generics, Union, Literal, and TypedDict.</p>
 <p>This function acts like a runtime version of <cite>isinstance()</cite> for type hints.</p>
@@ -621,7 +621,7 @@ validation, but it cannot cover all edge cases due to the complexity of
 Python’s type hinting system. It is designed to handle the most common
 use cases effectively.</p>
 <p>If you need both performance and type hint validation, consider using
-specialized libraries like <a class="reference external" href="https://pydantic-docs.helpmanual.io/">pydantic</a> 
+specialized libraries like <a class="reference external" href="https://pydantic-docs.helpmanual.io/">pydantic</a>
 or <a class="reference external" href="https://www.attrs.org/en/stable/">attrs</a> that are optimized
 for runtime data validation with type hints. They are more complex
 to use but can offer far better performance for specific use cases.</p>

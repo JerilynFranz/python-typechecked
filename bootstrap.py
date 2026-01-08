@@ -222,8 +222,22 @@ repository root after activating the environment with 'tox devenv -e dev'.
 Make sure to select the interpreter from the activated virtual environment
 so that VSCode uses the correct packages installed in that environment.
 
+If you can't find the interpreter in the list, you should look in VSCode's
+Settings under "Python: Use Environments Extension" and enable that option to have VSCode
+list virtual environments automatically. That should add the activated venv's interpreter
+to the list of available interpreters under a name like 'python-typechecked/venv/bin/python' (or
+'python-typechecked\venv\Scripts\python.exe' on Windows).
+
 If you are using another IDE or editor, refer to its documentation for selecting
 the Python interpreter from a virtual environment.
+
+The 'tox' tests include running tests for multiple Python versions and interpreters.
+The tests for 'pypy' and 'pypy3' interpreters require that 'rust' is installed on your system
+so that the 'pyo3' package can be built.
+
+If you do not have 'rust' installed, you can skip running tests for 'pypy' and 'pypy3'
+by excluding those environments when running 'tox', e.g.:
+    tox run -e py310,py311,py312,py313,py314
 """
 
 # --- Post-install instructions template ---
@@ -243,6 +257,7 @@ To deactivate the virtual environment, run:
   deactivate
 
 {TOOL_USAGE_INSTRUCTIONS}
+
 """
 
 # --- Confirmation prompt message ---

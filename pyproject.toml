@@ -14,14 +14,22 @@ keywords = ["typehint", "developer", "development", "typechecking", "type-checke
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
     "Operating System :: OS Independent",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
     "Topic :: Software Development",
-    "Topic :: Utilities"
+    "Typing :: Typed",
 ]
 
 dependencies = [
@@ -68,7 +76,6 @@ tools = [
     "hatch>=1.13",
     "hatchling>=1.27",
     "pydeps>=1.23.2",
-    "testplan>=22.8.0",
     "tox>=4.22.0",
     "tox-uv>=1.13.1",
     "uv>=0.9.18",
@@ -84,16 +91,19 @@ install_command = ["uv", "pip", "install", "{opts}", "{packages}"]
 
 # labels table for grouping environments
 [tool.tox.labels]
-test = ["py310", "py311", "py312", "py313", "py314", "doctest", "lint"]
+test = ["py310", "py311", "py312", "py313", "py314", "pypy310", "pypy311", "doctest", "lint"]
 
-# --- Base Test Environment for automation from env_list -
+# --- Base Test Environment for automation of 'run' from env_list -
 
 [tool.tox.env_run_base]
 description = "Run test under {base_python}"
-allowlist_externals = ["pytest", "flake8", "pylint", "mypy"]
+allowlist_externals = ["pytest", "flake8", "pylint", "mypy", "coverage"]
 dependency_groups = ["test", "lint", "tools"]
 extras = ["all"]
-commands = [["pytest", "{posargs:tests/}"]]
+commands = [
+    ["coverage", "run", "-m", "pytest", { replace = "posargs", extend = true }],
+    ["coverage", "report"],
+]
 
 # --- Concrete Test Environments ---
 
@@ -106,9 +116,8 @@ description = "Development environment with all tools"
 package = "editable"
 dependency_groups = ["test", "tools", "lint"]
 base = ["testenv"]
-base_python = ["python3.12", "python3.11", "python3.12", "python3.13", "python3.14"]
-allowlist_externals = ["pytest", "mypy", "flake8", "pylint"]
-
+base_python = ["python3.12", "python3.11", "python3.13", "python3.14"]
+allowlist_externals = ["pytest", "mypy", "flake8", "pylint", "coverage"]
 commands = []
 
 [tool.tox.env.lint]
@@ -131,13 +140,12 @@ description = "Build the documentation"
 base_python = ["python3.12"]
 dependency_groups = ["docs", "test"]
 extras = ["all"]
-allowlist_externals = ["sphinx-build", "sphinx-apidoc"]
+allowlist_externals = ["sphinx-build", "sphinx-apidoc", "pydeps"]
 commands = [
+    ["pydeps", "src/typechecked"],
     ["sphinx-apidoc", "--separate", "--remove-old", "--module-first", "-f", "-o", "docs_source/source", "src"],
     ["sphinx-build", "-b", "html", "docs_source/", "documentation/"],
 ]
-
-
 
 [build-system]
 requires = ["hatchling"]
@@ -231,7 +239,7 @@ disable = ["R0401", "R0801", "R0903", "R0902", "R0912", "R0913","R0915", "R0917"
 
 [tool.pytest.ini_options]
 testpaths = "tests"
-norecursedirs = ".git .tox .vscode venv* .*_cache build dist testplan.py"
+norecursedirs = ".git .tox .vscode venv* .*_cache build dist"
 
 [tool.coverage.run]
 branch = true
@@ -244,6 +252,7 @@ omit = [
 
 [tool.coverage.report]
 # Regexes for lines to exclude from consideration
+fail_under = 80
 exclude_also = [
     # Don't complain about missing debug-only code:
     "def __repr__",
@@ -267,9 +276,9 @@ exclude_also = [
 
 ignore_errors = true
 
-
 [tool.coverage.html]
 directory = "coverage_html_report"
+
 
 # Configuration for generating a dependency graph
 # See https://pypi.org/project/pydeps/
@@ -314,5 +323,4 @@ exclude_exact = [
     "typechecked._validation_cache._cache",
     "typechecked._validation_cache._error_tags",
     "typechecked._validation_state",
-   
 ]

@@ -38,10 +38,7 @@ class TestSpec(ABC):
 
                 # We've found the first frame outside the testspec package.
                 self._creation_traceback = TracebackType(
-                    tb_next=None,
-                    tb_frame=current_frame,
-                    tb_lasti=current_frame.f_lasti,
-                    tb_lineno=current_frame.f_lineno
+                    None, current_frame, current_frame.f_lasti, current_frame.f_lineno
                 )
                 return
         finally:

@@ -232,6 +232,7 @@
         <article role="main" id="furo-main-content">
           <h1>Source code for typechecked._immutable._immutable</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Module for immutable validation functions.&quot;&quot;&quot;</span>
+<span class="c1"># pylint: disable=too-many-return-statements</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_dataclass</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">types</span><span class="w"> </span><span class="kn">import</span> <span class="n">MappingProxyType</span><span class="p">,</span> <span class="n">NoneType</span>
@@ -251,6 +252,7 @@
     <span class="s2">&quot;ImmutableTypedDict&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 
+
 <span class="k">class</span><span class="w"> </span><span class="nc">NoAttrSentinel</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sentinel class to represent absence of an attribute.&quot;&quot;&quot;</span>
 
@@ -260,6 +262,7 @@
 <span class="n">IMMUTABLE_PRIMITIVE_TYPES_TUPLE</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">complex</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">NoneType</span><span class="p">,</span> <span class="n">Enum</span><span class="p">,</span> <span class="nb">range</span><span class="p">)</span>
 <span class="n">IMMUTABLE_CONTAINER_TYPES_TUPLE</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">frozenset</span><span class="p">,</span> <span class="n">MappingProxyType</span><span class="p">)</span>
 <span class="n">IMMUTABLE_PRIMITIVE_TYPES_SET</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">IMMUTABLE_PRIMITIVE_TYPES_TUPLE</span><span class="p">)</span>
+
 
 <div class="viewcode-block" id="validate_immutable">
 <a class="viewcode-back" href="../../../source/typechecked.html#typechecked.validate_immutable">[docs]</a>
@@ -284,14 +287,15 @@
         <span class="k">raise</span> <span class="n">TypeCheckedTypeError</span><span class="p">(</span><span class="s2">&quot;The &#39;name&#39; parameter must be a string.&quot;</span><span class="p">,</span>
                                    <span class="n">tag</span><span class="o">=</span><span class="n">ImmutableErrorTag</span><span class="o">.</span><span class="n">NAME_NOT_STRING</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">TypeCheckedValueError</span><span class="p">(</span><span class="s2">&quot;The &#39;name&#39; parameter must be a non-blank string.&quot;</span><span class="p">,</span>
-                                   <span class="n">tag</span><span class="o">=</span><span class="n">ImmutableErrorTag</span><span class="o">.</span><span class="n">NAME_IS_EMPTY_OR_BLANK_STRING</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">TypeCheckedValueError</span><span class="p">(</span>
+            <span class="s2">&quot;The &#39;name&#39; parameter must be a non-blank string.&quot;</span><span class="p">,</span>
+            <span class="n">tag</span><span class="o">=</span><span class="n">ImmutableErrorTag</span><span class="o">.</span><span class="n">NAME_IS_EMPTY_OR_BLANK_STRING</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">depth</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
         <span class="k">raise</span> <span class="n">TypeCheckedTypeError</span><span class="p">(</span><span class="s2">&quot;The &#39;depth&#39; parameter must be an integer.&quot;</span><span class="p">,</span>
                                    <span class="n">tag</span><span class="o">=</span><span class="n">ImmutableErrorTag</span><span class="o">.</span><span class="n">DEPTH_NOT_INTEGER</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">depth</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">TypeCheckedValueError</span><span class="p">(</span><span class="s2">&quot;The &#39;depth&#39; parameter must be a positive integer.&quot;</span><span class="p">,</span>
-                                   <span class="n">tag</span><span class="o">=</span><span class="n">ImmutableErrorTag</span><span class="o">.</span><span class="n">DEPTH_NOT_POSITIVE_INTEGER</span><span class="p">)</span>
+                                    <span class="n">tag</span><span class="o">=</span><span class="n">ImmutableErrorTag</span><span class="o">.</span><span class="n">DEPTH_NOT_POSITIVE_INTEGER</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">message</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">raise</span> <span class="n">TypeCheckedTypeError</span><span class="p">(</span><span class="s2">&quot;The &#39;message&#39; parameter must be a string if provided.&quot;</span><span class="p">,</span>
                                    <span class="n">tag</span><span class="o">=</span><span class="n">ImmutableErrorTag</span><span class="o">.</span><span class="n">MESSAGE_NOT_STRING</span><span class="p">)</span>
@@ -301,6 +305,7 @@
         <span class="k">raise</span> <span class="n">TypeCheckedTypeError</span><span class="p">(</span><span class="n">formatted_message</span><span class="p">,</span>
                                    <span class="n">tag</span><span class="o">=</span><span class="n">ImmutableErrorTag</span><span class="o">.</span><span class="n">OBJECT_NOT_IMMUTABLE</span><span class="p">)</span>
     <span class="k">return</span> <span class="kc">True</span></div>
+
 
 
 <div class="viewcode-block" id="is_immutable">
@@ -314,6 +319,7 @@
 <span class="sd">    :return bool: True if the object is immutable, False otherwise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_is_immutable</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="nb">set</span><span class="p">(),</span> <span class="n">depth</span><span class="o">=</span><span class="n">depth</span><span class="p">)</span></div>
+
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_is_immutable</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">parents</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">depth</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -338,7 +344,7 @@
     <span class="n">immutable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="c1"># Directly immutable types</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Immutable</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">IMMUTABLE_PRIMITIVE_TYPES_TUPLE</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Immutable</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">IMMUTABLE_PRIMITIVE_TYPES_TUPLE</span><span class="p">):</span>  <span class="c1"># pylint: disable=R1701</span>
         <span class="n">immutable</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="c1"># Immutable container types</span>

@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>typechecked._type_hints - TypeChecked 0.8.0-beta.1 documentation</title>
+        <title>typechecked._typechecked - TypeChecked 0.8.0-beta.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=c309799c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=d998a142" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -230,7 +230,7 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <h1>Source code for typechecked._type_hints</h1><div class="highlight"><pre>
+          <h1>Source code for typechecked._typechecked</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Validation functions for type hints and instances against those type hints.&quot;&quot;&quot;</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Hashable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">types</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoneType</span><span class="p">,</span> <span class="n">UnionType</span>
@@ -243,7 +243,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">._error_tags</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeHintsErrorTag</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeCheckedTypeError</span><span class="p">,</span> <span class="n">TypeCheckedValueError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._generic</span><span class="w"> </span><span class="kn">import</span> <span class="n">_check_generic</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._immutable._immutable</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_immutable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._immutable</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_immutable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._log</span><span class="w"> </span><span class="kn">import</span> <span class="n">log</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._options</span><span class="w"> </span><span class="kn">import</span> <span class="n">Options</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">_check_typing_literal</span><span class="p">,</span> <span class="n">_check_typing_typeddict</span><span class="p">,</span> <span class="n">_check_typing_union</span>
@@ -262,6 +262,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">clear_typechecked_cache</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Clear the internal type hint validation cache.&quot;&quot;&quot;</span>
     <span class="n">_CACHE</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
 
 
 <div class="viewcode-block" id="isinstance_of_typehint">
@@ -290,7 +291,7 @@
 <span class="sd">        class Person(TypedDict):</span>
 <span class="sd">            name: str</span>
 <span class="sd">            age: int</span>
-<span class="sd">        </span>
+
 <span class="sd">        DataType: TypeAlias = list[int] | Person  # TypeAlias is optional, but clarifies intent for static analysis</span>
 <span class="sd">        data: DataType = {&quot;name&quot;: &quot;Alice&quot;, &quot;age&quot;: 30}</span>
 <span class="sd">        result = isinstance_of_typehint(data, DataType)</span>
@@ -303,7 +304,7 @@
 <span class="sd">        bad_data = {&quot;name&quot;: &quot;Charlie&quot;, &quot;age&quot;: &quot;thirty&quot;}</span>
 <span class="sd">        result = isinstance_of_typehint(bad_data, Person)</span>
 <span class="sd">        print(result)  # False</span>
-<span class="sd">        </span>
+
 <span class="sd">    It can validate whether an object conforms to complex type hints the same way</span>
 <span class="sd">    that static type checkers do - but at runtime. This makes it useful for</span>
 <span class="sd">    validating function arguments, configuration data, or any other data structures</span>
@@ -338,7 +339,7 @@
 <span class="sd">           valid = all(isinstance(item, (str, int, dict)) for item in data)</span>
 <span class="sd">        else:</span>
 <span class="sd">           valid = False</span>
-<span class="sd">    </span>
+
 <span class="sd">    than to do:</span>
 <span class="sd">    .. code-block:: python</span>
 <span class="sd">        valid = isinstance_of_typehint(data, list[str | int | dict[str, list[float | None]]])</span>
@@ -360,7 +361,7 @@
 <span class="sd">    use cases effectively.</span>
 
 <span class="sd">    If you need both performance and type hint validation, consider using</span>
-<span class="sd">    specialized libraries like `pydantic &lt;https://pydantic-docs.helpmanual.io/&gt;`_ </span>
+<span class="sd">    specialized libraries like `pydantic &lt;https://pydantic-docs.helpmanual.io/&gt;`_</span>
 <span class="sd">    or `attrs &lt;https://www.attrs.org/en/stable/&gt;`_ that are optimized</span>
 <span class="sd">    for runtime data validation with type hints. They are more complex</span>
 <span class="sd">    to use but can offer far better performance for specific use cases.</span>
@@ -369,7 +370,7 @@
 <span class="sd">    user-defined classes as immutable for caching purposes. There is also</span>
 <span class="sd">    a :class:`~typechecked.ImmutableTypedDict` type that can be used</span>
 <span class="sd">    to mark immutable TypedDicts. If your objects are immutable, caching</span>
-<span class="sd">    will be much more effective. </span>
+<span class="sd">    will be much more effective.</span>
 
 <span class="sd">    The checker automatically treats built-in immutable types (NoneType, bool, int, float,</span>
 <span class="sd">    complex, str, bytes) as immutable for caching purposes and when composed</span>
@@ -387,7 +388,7 @@
 <span class="sd">        without using a string to represent types.</span>
 
 <span class="sd">        Examples:</span>
-<span class="sd">    </span>
+
 <span class="sd">        .. code-block:: python</span>
 <span class="sd">            isinstance_of_typehint(obj, &#39;list[int]&#39;)  # This will raise TypeCheckedValueError</span>
 
@@ -407,7 +408,7 @@
 <span class="sd">    The depth parameter limits the recursion depth for nested structures. If the</span>
 <span class="sd">    depth limit is reached, the function will return `True` for validity, but</span>
 <span class="sd">    will not validate any deeper levels of the object. This is to prevent infinite</span>
-<span class="sd">    recursion in case of cyclic references or excessively deep structures. </span>
+<span class="sd">    recursion in case of cyclic references or excessively deep structures.</span>
 
 <span class="sd">    The `depth` parameter is defined as the number of nested levels to check within the object</span>
 <span class="sd">    structure (including the top-level object). For example:</span>
@@ -454,7 +455,8 @@
     <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">valid</span></div>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_check_instance_of_typehint</span><span class="p">(</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_instance_of_typehint</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-return-statements  # noqa: C901</span>
         <span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
         <span class="n">type_hint</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
         <span class="n">options</span><span class="p">:</span> <span class="n">Options</span><span class="p">,</span>
@@ -479,37 +481,22 @@
     <span class="c1"># Check the cache first</span>
     <span class="n">cached_result</span> <span class="o">=</span> <span class="n">_CACHE</span><span class="o">.</span><span class="n">valid_in_cache</span><span class="p">(</span><span class="n">type_hint</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">cached_result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># Only cached if Immutable</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="s2">&quot;_check_instance_of_typehint: Cache hit for object of type &#39;</span><span class="si">%s</span><span class="s2">&#39; and type hint &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
-            <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">type_hint</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cached_result</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">raise_on_error</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">cached_result</span><span class="p">,</span> <span class="n">IS_IMMUTABLE</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">TypeCheckedTypeError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Object of type &#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39; is not an instance of type hint &#39;</span><span class="si">{</span><span class="n">type_hint</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
             <span class="n">tag</span><span class="o">=</span><span class="n">TypeHintsErrorTag</span><span class="o">.</span><span class="n">TYPE_HINT_MISMATCH</span><span class="p">)</span>
 
-    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-        <span class="s2">&quot;_check_instance_of_typehint: Cache miss for object of type &#39;</span><span class="si">%s</span><span class="s2">&#39; and type hint &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">type_hint</span><span class="p">)</span>
-
     <span class="c1"># If we have hit the depth limit for the check,</span>
     <span class="c1"># Return Valid, but not Immutable (as we can&#39;t be sure)</span>
     <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">depth</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">parents</span><span class="p">):</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="s2">&quot;_check_instance_of_typehint: Depth limit reached for object of type &#39;</span><span class="si">%s</span><span class="s2">&#39; and type hint &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
-            <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">type_hint</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">IS_VALID</span><span class="p">,</span> <span class="n">NOT_IMMUTABLE</span><span class="p">)</span>
 
     <span class="n">origin</span> <span class="o">=</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">type_hint</span><span class="p">)</span>
     <span class="n">args</span> <span class="o">=</span> <span class="n">get_args</span><span class="p">(</span><span class="n">type_hint</span><span class="p">)</span>
 
-    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-        <span class="s2">&quot;_check_instance_of_typehint: Origin of type hint &#39;</span><span class="si">%s</span><span class="s2">&#39; is &#39;</span><span class="si">%s</span><span class="s2">&#39; with args &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
-        <span class="n">type_hint</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
-
     <span class="n">current_state</span> <span class="o">=</span> <span class="n">ValidationState</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="n">type_hint</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">current_state</span> <span class="ow">in</span> <span class="n">parents</span><span class="p">:</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;_check_instance_of_typehint: Cycle detected for object of type &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">raise_on_error</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TypeCheckedTypeError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Cycle detected in object graph for object of type &#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">,</span>
@@ -521,7 +508,6 @@
     <span class="c1"># Unwrap Final, ClassVar and Annotated type hints</span>
     <span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">origin</span><span class="o">.</span><span class="vm">__module__</span> <span class="o">==</span> <span class="s1">&#39;typing&#39;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">origin</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;Final&#39;</span><span class="p">,</span> <span class="s1">&#39;ClassVar&#39;</span><span class="p">,</span> <span class="s1">&#39;Annotated&#39;</span><span class="p">}:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;_check_instance_of_typehint: Unwrapping </span><span class="si">%s</span><span class="s2"> type hint &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">origin</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">type_hint</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">TypeCheckedValueError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">origin</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> type hint &#39;</span><span class="si">{</span><span class="n">type_hint</span><span class="si">}</span><span class="s2">&#39; has no arguments.&quot;</span><span class="p">,</span>
@@ -532,52 +518,42 @@
     <span class="c1"># Unwrap NewType definitions</span>
     <span class="k">if</span> <span class="n">_is_new_type</span><span class="p">(</span><span class="n">type_hint</span><span class="p">):</span>
         <span class="n">supertype</span> <span class="o">=</span> <span class="n">type_hint</span><span class="o">.</span><span class="n">__supertype__</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;_check_instance_of_typehint: Detected NewType &#39;</span><span class="si">%s</span><span class="s2">&#39; with supertype &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
-                  <span class="n">type_hint</span><span class="p">,</span> <span class="n">supertype</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">supertype</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">raise_on_error</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">TypeCheckedTypeError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Object of type &#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39; is not an instance of NewType supertype &#39;</span><span class="si">{</span><span class="n">supertype</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
                     <span class="n">tag</span><span class="o">=</span><span class="n">TypeHintsErrorTag</span><span class="o">.</span><span class="n">TYPE_HINT_MISMATCH</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">NOT_VALID</span><span class="p">,</span> <span class="n">NOT_IMMUTABLE</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;_check_instance_of_typehint: Unwrapping NewType &#39;</span><span class="si">%s</span><span class="s2">&#39; to supertype &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
-                    <span class="n">type_hint</span><span class="p">,</span> <span class="n">supertype</span><span class="p">)</span>
         <span class="n">type_hint</span> <span class="o">=</span> <span class="n">supertype</span>
         <span class="k">return</span> <span class="n">_check_instance_of_typehint</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">type_hint</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">new_parents</span><span class="p">,</span> <span class="n">raise_on_error</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="s2">&quot;root&quot;</span><span class="p">)</span>
 
     <span class="c1"># Handle TypeVar before generic/container checks and caching</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">type_hint</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">):</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;_check_instance_of_typehint: Handling TypeVar &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">type_hint</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">type_hint</span><span class="o">.</span><span class="n">__constraints__</span><span class="p">:</span>
             <span class="c1"># Accept if obj matches any constraint</span>
             <span class="k">for</span> <span class="n">constraint</span> <span class="ow">in</span> <span class="n">type_hint</span><span class="o">.</span><span class="n">__constraints__</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">_check_instance_of_typehint</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">constraint</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">new_parents</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">)</span><span class="o">.</span><span class="n">valid</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">IS_VALID</span><span class="p">,</span> <span class="n">is_immutable</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">NOT_VALID</span><span class="p">,</span> <span class="n">is_immutable</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
-        <span class="k">elif</span> <span class="n">type_hint</span><span class="o">.</span><span class="n">__bound__</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">type_hint</span><span class="o">.</span><span class="n">__bound__</span><span class="p">:</span>
             <span class="c1"># Accept if obj matches the bound</span>
             <span class="k">return</span> <span class="n">_check_instance_of_typehint</span><span class="p">(</span>
                 <span class="n">obj</span><span class="p">,</span> <span class="n">type_hint</span><span class="o">.</span><span class="n">__bound__</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">new_parents</span><span class="p">,</span> <span class="n">raise_on_error</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># Unconstrained TypeVar: treat as Any</span>
-            <span class="k">return</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">IS_VALID</span><span class="p">,</span> <span class="n">is_immutable</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
+        <span class="c1"># Unconstrained TypeVar: treat as Any</span>
+        <span class="k">return</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">IS_VALID</span><span class="p">,</span> <span class="n">is_immutable</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_check_none_instance_of_typehint</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">type_hint</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">new_parents</span><span class="p">,</span> <span class="n">raise_on_error</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">type_hint</span> <span class="ow">in</span> <span class="p">{</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoneType</span><span class="p">}:</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="s2">&quot;_check_instance_of_typehint: Object of type &#39;</span><span class="si">%s</span><span class="s2">&#39; does not match NoneType type hint&quot;</span><span class="p">,</span>
-            <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">type_hint</span> <span class="ow">in</span> <span class="p">{</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoneType</span><span class="p">}:</span>
         <span class="k">if</span> <span class="n">raise_on_error</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TypeCheckedTypeError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Object of type &#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39; is not None for type hint &#39;</span><span class="si">{</span><span class="n">type_hint</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
                 <span class="n">tag</span><span class="o">=</span><span class="n">TypeHintsErrorTag</span><span class="o">.</span><span class="n">TYPE_HINT_MISMATCH</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">NOT_VALID</span><span class="p">,</span> <span class="n">NOT_IMMUTABLE</span><span class="p">)</span>
 
-    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;_check_instance_of_typehint: Checking if type hint is Any (</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">type_hint</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">type_hint</span> <span class="ow">is</span> <span class="n">Any</span><span class="p">:</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="s2">&quot;_check_instance_of_typehint: Type hint is Any, automatically valid&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">IS_VALID</span><span class="p">,</span> <span class="n">is_immutable</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
 
     <span class="c1"># fast paths for primitives. Caching would be pointless here. It takes much more time to cache than to check.</span>
@@ -586,29 +562,16 @@
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
             <span class="s2">&quot;_check_instance_of_typehint: Type hint &#39;</span><span class="si">%s</span><span class="s2">&#39; - checking if object is primitive type&quot;</span><span class="p">,</span> <span class="n">type_hint</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">complex</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="s2">&quot;_check_instance_of_typehint: Type hint &#39;</span><span class="si">%s</span><span class="s2">&#39; is automatically valid for primitive objects of type &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
-                <span class="n">type_hint</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">IS_VALID</span><span class="p">,</span> <span class="n">IS_IMMUTABLE</span><span class="p">)</span>
 
-    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;_check_instance_of_typehint: Checking if type_hint &#39;</span><span class="si">%s</span><span class="s2">&#39; is a primitive type hint&quot;</span><span class="p">,</span> <span class="n">type_hint</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">type_hint</span> <span class="ow">in</span> <span class="p">{</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">complex</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="nb">str</span><span class="p">}:</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;_check_instance_of_typehint: Checking if object (</span><span class="si">%s</span><span class="s2">) matches type hint for primitives check &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
-                  <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">type_hint</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">type_hint</span><span class="p">):</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="s2">&quot;_check_instance_of_typehint: Object of type &#39;</span><span class="si">%s</span><span class="s2">&#39; matches primitive type hint &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
-                <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">type_hint</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">IS_VALID</span><span class="p">,</span> <span class="n">IS_IMMUTABLE</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">raise_on_error</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TypeCheckedTypeError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Object of type &#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39; does not match primitive type hint &#39;</span><span class="si">{</span><span class="n">type_hint</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
                 <span class="n">tag</span><span class="o">=</span><span class="n">TypeHintsErrorTag</span><span class="o">.</span><span class="n">VALIDATION_FAILED</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">NOT_VALID</span><span class="p">,</span> <span class="n">IS_IMMUTABLE</span><span class="p">)</span>
-
-    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-        <span class="s2">&quot;_check_instance_of_typehint: Object of type &#39;</span><span class="si">%s</span><span class="s2">&#39;&#39; is not a primitive data type&#39;, proceeding with full check&quot;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">origin</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Union</span><span class="p">,</span> <span class="n">UnionType</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_check_typing_union</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">type_hint</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">new_parents</span><span class="p">,</span> <span class="n">raise_on_error</span><span class="p">)</span>
@@ -632,6 +595,7 @@
 
     <span class="k">return</span> <span class="n">result</span>
 
+
 <span class="k">def</span><span class="w"> </span><span class="nf">_check_none_instance_of_typehint</span><span class="p">(</span>
         <span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
         <span class="n">type_hint</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
@@ -652,8 +616,6 @@
 <span class="sd">    :param bool raise_on_error: Whether to raise an exception on validation failure.</span>
 <span class="sd">    :return CheckResult: Tuple indicating (is_valid, is_immutable).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-        <span class="s2">&quot;_check_none_instance_of_typehint: Checking None against type hint &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">type_hint</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># Sanity check for bad calls</span>
         <span class="k">raise</span> <span class="n">TypeCheckedValueError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Object is not None, got &#39;</span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">,</span>
@@ -690,6 +652,7 @@
 
     <span class="k">return</span> <span class="n">check_result</span>
 
+
 <span class="k">def</span><span class="w"> </span><span class="nf">_is_subtype_of_typehint</span><span class="p">(</span><span class="n">subtype</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">basetype</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Checks if a given type is a subtype of or compatible with a base type.</span>
@@ -702,8 +665,6 @@
 <span class="sd">    :param Any basetype: The potential base type.</span>
 <span class="sd">    :return bool: True if subtype is a subtype of basetype, False otherwise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;_is_subtype_of_typehint: Checking if &#39;</span><span class="si">%s</span><span class="s2">&#39; is a subtype of &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">subtype</span><span class="p">,</span> <span class="n">basetype</span><span class="p">)</span>
-    <span class="c1"># Handle origins and args</span>
     <span class="n">origin_subtype</span> <span class="o">=</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">subtype</span><span class="p">)</span>
     <span class="n">args_subtype</span> <span class="o">=</span> <span class="n">get_args</span><span class="p">(</span><span class="n">subtype</span><span class="p">)</span>
     <span class="n">origin_basetype</span> <span class="o">=</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">basetype</span><span class="p">)</span>
@@ -715,7 +676,7 @@
     <span class="c1"># Case 1: Simple, non-generic types (int, str, etc.)</span>
     <span class="k">if</span> <span class="n">origin_subtype</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">origin_basetype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">subtype</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">basetype</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">subtype</span> <span class="o">==</span> <span class="n">basetype</span> <span class="c1"># e.g. comparing Literals</span>
+            <span class="k">return</span> <span class="n">subtype</span> <span class="o">==</span> <span class="n">basetype</span>  <span class="c1"># e.g. comparing Literals</span>
         <span class="k">return</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">subtype</span><span class="p">,</span> <span class="n">basetype</span><span class="p">)</span>
 
     <span class="c1"># Case 2: Generic containers (list, set, sequence)</span>
@@ -729,16 +690,10 @@
     <span class="c1"># Fallback for non-matching structures</span>
     <span class="k">return</span> <span class="kc">False</span>
 
+
 <span class="k">def</span><span class="w"> </span><span class="nf">_is_new_type</span><span class="p">(</span><span class="n">tp</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if a type hint is a NewType definition.&quot;&quot;&quot;</span>
-    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;_is_new_type: Checking if type hint &#39;</span><span class="si">%s</span><span class="s2">&#39; is a NewType&quot;</span><span class="p">,</span> <span class="n">tp</span><span class="p">)</span>
-    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;_is_new_type: Type hint &#39;</span><span class="si">%s</span><span class="s2">&#39; is callable: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">tp</span><span class="p">,</span> <span class="nb">callable</span><span class="p">(</span><span class="n">tp</span><span class="p">))</span>
-    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;_is_new_type: Type hint &#39;</span><span class="si">%s</span><span class="s2">&#39; has __supertype__: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">tp</span><span class="p">,</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">tp</span><span class="p">,</span> <span class="s1">&#39;__supertype__&#39;</span><span class="p">))</span>
-    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;_is_new_type: Type hint &#39;</span><span class="si">%s</span><span class="s2">&#39; __annotations__: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">tp</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">tp</span><span class="p">,</span> <span class="s1">&#39;__annotations__&#39;</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">))</span>
-    <span class="k">return</span> <span class="p">(</span>
-        <span class="nb">callable</span><span class="p">(</span><span class="n">tp</span><span class="p">)</span>
-        <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">tp</span><span class="p">,</span> <span class="s1">&#39;__supertype__&#39;</span><span class="p">)</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="nb">callable</span><span class="p">(</span><span class="n">tp</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">tp</span><span class="p">,</span> <span class="s1">&#39;__supertype__&#39;</span><span class="p">)</span>
 </pre></div>
         </article>
       </div>
