@@ -7,7 +7,7 @@ from typing import Any
 from .._check_result import CheckResult
 from .._constants import IS_VALID, NOT_IMMUTABLE, NOT_VALID
 from .._error_tags import TypeHintsErrorTag
-from .._exceptions import TypeCheckedTypeError, TypeCheckedValueError
+from .._exceptions import TypeCheckError
 from .._log import log
 
 __all__ = (
@@ -29,8 +29,7 @@ def _check_collections_abc_callable(  # noqa: C901
     :param tuple args: The type arguments of the Callable type hint.
     :param bool raise_on_error: Whether to raise an exception on validation failure.
     :return CheckResult: Tuple indicating (is_valid, is_immutable).
-    :raises TypeCheckedTypeError: If raise_on_error is True and validation fails.
-    :raises TypeCheckedValueError: If origin is not a subclass of Callable.
+    :raises TypeCheckError: If origin is not a subclass of Callable.
     """
     from .._typechecked import _is_subtype_of_typehint  # pylint: disable=import-outside-toplevel
 
@@ -38,13 +37,13 @@ def _check_collections_abc_callable(  # noqa: C901
         "_container_check_callable: Checking object of type '%s' against Callable type hint '%s'",
         type(obj).__name__, type_hint)
     if not issubclass(origin, Callable):  # type: ignore[arg-type]
-        raise TypeCheckedValueError(
+        raise TypeCheckError(
             f"Type hint '{type_hint}' is not a Callable.",
             tag=TypeHintsErrorTag.INVALID_TYPE_HINT)
 
     if not callable(obj):
         if raise_on_error:
-            raise TypeCheckedTypeError(
+            raise TypeCheckError(
                 f"Object of type '{type(obj).__name__}' is not callable.",
                 tag=TypeHintsErrorTag.VALIDATION_FAILED)
         return CheckResult(NOT_VALID, NOT_IMMUTABLE)
@@ -64,7 +63,7 @@ def _check_collections_abc_callable(  # noqa: C901
                     # Check if the actual return type is a subtype of the expected one (covariance)
                     if not _is_subtype_of_typehint(return_annotation, expected_return_type):
                         if raise_on_error:
-                            raise TypeCheckedTypeError(
+                            raise TypeCheckError(
                                 f"Callable's annotated return type '{return_annotation}' is not compatible with "
                                 f"expected return type '{expected_return_type}'.",
                                 tag=TypeHintsErrorTag.VALIDATION_FAILED)
@@ -83,7 +82,7 @@ def _check_collections_abc_callable(  # noqa: C901
         # Check number of parameters matches
         if len(param_types) != len(params):
             if raise_on_error:
-                raise TypeCheckedTypeError(
+                raise TypeCheckError(
                     f"Callable has {len(params)} parameters, expected {len(param_types)} "
                     f"for type hint '{type_hint}'.",
                     tag=TypeHintsErrorTag.VALIDATION_FAILED)
@@ -95,7 +94,7 @@ def _check_collections_abc_callable(  # noqa: C901
                 # Check if the expected param type is a subtype of the actual one (contravariance)
                 if not _is_subtype_of_typehint(expected_type, param.annotation):
                     if raise_on_error:
-                        raise TypeCheckedTypeError(
+                        raise TypeCheckError(
                             f"Expected parameter type '{expected_type}' is not compatible with "
                             f"callable's annotated parameter type '{param.annotation}' for param '{param.name}'.",
                             tag=TypeHintsErrorTag.VALIDATION_FAILED)
@@ -106,7 +105,7 @@ def _check_collections_abc_callable(  # noqa: C901
             # Check if the actual return annotation is a subtype of the expected return type (covariance)
             if not _is_subtype_of_typehint(sig.return_annotation, return_type):
                 if raise_on_error:
-                    raise TypeCheckedTypeError(
+                    raise TypeCheckError(
                         f"Callable's annotated return type '{sig.return_annotation}' does not match "
                         f"expected type hint '{return_type}'.",
                         tag=TypeHintsErrorTag.VALIDATION_FAILED)

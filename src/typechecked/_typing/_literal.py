@@ -1,11 +1,10 @@
 """Validator for typing.Literal type hints."""
 from typing import Any, Literal
 
-from .._exceptions import TypeCheckedTypeError, TypeCheckedValueError
-
 from .._check_result import CheckResult
 from .._constants import IS_IMMUTABLE, IS_VALID, NOT_VALID
 from .._error_tags import TypeHintsErrorTag
+from .._exceptions import TypeCheckError
 from .._immutable import is_immutable
 
 __all__ = (
@@ -27,10 +26,10 @@ def _check_typing_literal(
     :param tuple args: The type arguments of the Literal type hint.
     :param bool raise_on_error: Whether to raise an exception on validation failure.
     :return CheckResult: Tuple indicating (is_valid, is_immutable).
-    :raises TypeCheckedTypeError: If raise_on_error is True and validation fails.
+    :raises TypeCheckError: If raise_on_error is True and validation fails.
     """
     if origin is not Literal:  # Sanity check for bad calls
-        raise TypeCheckedValueError(
+        raise TypeCheckError(
             f"Type hint '{type_hint}' is not a Literal type.",
             tag=TypeHintsErrorTag.INVALID_TYPE_HINT)
 
@@ -38,7 +37,7 @@ def _check_typing_literal(
         return CheckResult(IS_VALID, IS_IMMUTABLE)
 
     if raise_on_error:
-        raise TypeCheckedTypeError(
+        raise TypeCheckError(
             f"Object of type '{type(obj)}' does not match type hint '{type_hint}'.",
             tag=TypeHintsErrorTag.VALIDATION_FAILED)
     return CheckResult(NOT_VALID, is_immutable(obj))

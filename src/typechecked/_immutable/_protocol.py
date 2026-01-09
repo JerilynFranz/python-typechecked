@@ -62,6 +62,7 @@ __all__ = (
     "ImmutableTypedDict",
 )
 
+
 @runtime_checkable
 class Immutable(Protocol):
     """Protocol for user defined immutable types.
@@ -208,7 +209,7 @@ class ImmutableTypedDict(TypedDict):
 
         .. code-block:: python
             from typing import TypedDict
-            
+
             class Point2D(TypedDict):
                 x: float
                 y: float

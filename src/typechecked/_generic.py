@@ -6,7 +6,7 @@ from ._cache import _CACHE
 from ._check_result import CheckResult
 from ._constants import IS_IMMUTABLE, IS_VALID, NOT_VALID
 from ._error_tags import TypeHintsErrorTag
-from ._exceptions import TypeCheckedTypeError
+from ._exceptions import TypeCheckError
 from ._immutable import is_immutable
 from ._log import log
 from ._options import Options
@@ -57,7 +57,7 @@ def _check_generic(  # pylint: disable=too-many-locals,too-many-return-statement
             type(obj).__name__, type_hint)
         if cached_result or not raise_on_error:
             return CheckResult(cached_result, IS_IMMUTABLE)
-        raise TypeCheckedTypeError(
+        raise TypeCheckError(
             f"Object of type '{type(obj).__name__}' is not an instance of type hint '{type_hint}'",
             tag=TypeHintsErrorTag.TYPE_HINT_MISMATCH)
 
@@ -68,7 +68,7 @@ def _check_generic(  # pylint: disable=too-many-locals,too-many-return-statement
             and any(base is Protocol for base in type_hint.__mro__)
             and not getattr(type_hint, '_is_runtime_protocol', False)):
         if raise_on_error:
-            raise TypeCheckedTypeError(
+            raise TypeCheckError(
                 f'Protocol {type_hint} is not runtime checkable.',
                 tag=TypeHintsErrorTag.NON_RUNTIME_CHECKABLE_PROTOCOL)
         return CheckResult(NOT_VALID, obj_is_immutable)
@@ -92,7 +92,7 @@ def _check_generic(  # pylint: disable=too-many-locals,too-many-return-statement
                 _CACHE.add_cache_entry(type_hint, obj, IS_VALID, options.noncachable_types)
             return CheckResult(IS_VALID, obj_is_immutable)
         if raise_on_error:
-            raise TypeCheckedTypeError(
+            raise TypeCheckError(
                 f'Object of type {type(obj).__name__} is not an instance of {type_hint} '
                 f'(origin = {origin}, args = {args})',
                 tag=TypeHintsErrorTag.VALIDATION_FAILED
@@ -102,20 +102,20 @@ def _check_generic(  # pylint: disable=too-many-locals,too-many-return-statement
     try:
         if not isinstance(obj, origin):
             if raise_on_error:
-                raise TypeCheckedTypeError(
+                raise TypeCheckError(
                     f'Object of type {type(obj).__name__} is not an instance of {origin.__name__}',
                     tag=TypeHintsErrorTag.VALIDATION_FAILED
                 )
             return CheckResult(NOT_VALID, obj_is_immutable)
     except TypeError as exc:
-        if isinstance(exc, TypeCheckedTypeError):
+        if isinstance(exc, TypeCheckError):
             raise
         # Some origins may not be valid types for isinstance checks
         if origin in {Required, NotRequired, ReadOnly, Never}:
-            raise TypeCheckedTypeError(
+            raise TypeCheckError(
                 f'Origin {origin} ({type_hint}) is not a valid type outside of a TypedDict context.',
                 tag=TypeHintsErrorTag.VALIDATION_FAILED) from exc
-        raise TypeCheckedTypeError(
+        raise TypeCheckError(
             f'Origin {origin} ({type_hint}) is not a valid type for isinstance check.',
             tag=TypeHintsErrorTag.VALIDATION_FAILED) from exc
 
@@ -173,7 +173,7 @@ def _check_generic(  # pylint: disable=too-many-locals,too-many-return-statement
         if result.valid and result.immutable:
             _CACHE.add_cache_entry(type_hint, obj, result.immutable, options.noncachable_types)
         if raise_on_error and not result.valid:
-            raise TypeCheckedTypeError(
+            raise TypeCheckError(
                 f"Object of type '{type(obj).__name__}' is not an instance of generic type hint '{type_hint}'",
                 tag=TypeHintsErrorTag.TYPE_HINT_MISMATCH)
         return result
@@ -188,7 +188,7 @@ def _check_generic(  # pylint: disable=too-many-locals,too-many-return-statement
         "_check_generic: No specific check found for object of type '%s' against generic type hint '%s'",
         type(obj).__name__, type_hint)
 
-    raise TypeCheckedTypeError(
+    raise TypeCheckError(
         f"Unable to validate object of type '{type(obj).__name__}' against "
         f"generic type hint '{type_hint}'",
         tag=TypeHintsErrorTag.UNHANDLED_GENERIC_TYPE_HINT)

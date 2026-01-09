@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>typechecked._immutable._immutable - TypeChecked 0.8.0-beta.1 documentation</title>
+        <title>typechecked._immutable._immutable - TypeChecked 0.9.0-beta documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=c309799c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=d998a142" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">TypeChecked 0.8.0-beta.1 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">TypeChecked 0.9.0-beta documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
-  <span class="sidebar-brand-text">TypeChecked 0.8.0-beta.1 documentation</span>
+  <span class="sidebar-brand-text">TypeChecked 0.9.0-beta documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -192,12 +192,9 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+  <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../source/modules.html">src</a><input aria-label="Toggle navigation of src" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../source/typechecked.html">typechecked package</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../genindex.html">Index</a></li>
 </ul>
 
 </div>
@@ -238,7 +235,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">types</span><span class="w"> </span><span class="kn">import</span> <span class="n">MappingProxyType</span><span class="p">,</span> <span class="n">NoneType</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">TypeGuard</span><span class="p">,</span> <span class="n">get_args</span><span class="p">,</span> <span class="n">get_origin</span><span class="p">,</span> <span class="n">is_typeddict</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">.._exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeCheckedRecursionError</span><span class="p">,</span> <span class="n">TypeCheckedTypeError</span><span class="p">,</span> <span class="n">TypeCheckedValueError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.._exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeCheckError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.._log</span><span class="w"> </span><span class="kn">import</span> <span class="n">log</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._error_tags</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImmutableErrorTag</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._protocol</span><span class="w"> </span><span class="kn">import</span> <span class="n">Immutable</span><span class="p">,</span> <span class="n">ImmutableTypedDict</span>
@@ -279,31 +276,24 @@
 <span class="sd">    :param int depth: Maximum recursion depth to prevent infinite loops on cyclic references.</span>
 <span class="sd">    :return bool: True if the object is immutable.</span>
 
-<span class="sd">    :raises TypeCheckedRecursionError: If the maximum recursion depth is exceeded while checking immutability.</span>
-<span class="sd">    :raises TypeCheckedTypeError: If the object is not immutable or if parameters are of incorrect types.</span>
-<span class="sd">    :raises TypeCheckedValueError: If parameters have invalid values.</span>
+<span class="sd">    :raises TypeCheckError: If the object is not immutable</span>
+<span class="sd">    :raises TypeError: If the calling parameters are of incorrect types.</span>
+<span class="sd">    :raises ValueError: If the calling parameters have invalid values.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">TypeCheckedTypeError</span><span class="p">(</span><span class="s2">&quot;The &#39;name&#39; parameter must be a string.&quot;</span><span class="p">,</span>
-                                   <span class="n">tag</span><span class="o">=</span><span class="n">ImmutableErrorTag</span><span class="o">.</span><span class="n">NAME_NOT_STRING</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The &#39;name&#39; parameter must be a string.&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">TypeCheckedValueError</span><span class="p">(</span>
-            <span class="s2">&quot;The &#39;name&#39; parameter must be a non-blank string.&quot;</span><span class="p">,</span>
-            <span class="n">tag</span><span class="o">=</span><span class="n">ImmutableErrorTag</span><span class="o">.</span><span class="n">NAME_IS_EMPTY_OR_BLANK_STRING</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The &#39;name&#39; parameter must be a non-blank string.&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">depth</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">TypeCheckedTypeError</span><span class="p">(</span><span class="s2">&quot;The &#39;depth&#39; parameter must be an integer.&quot;</span><span class="p">,</span>
-                                   <span class="n">tag</span><span class="o">=</span><span class="n">ImmutableErrorTag</span><span class="o">.</span><span class="n">DEPTH_NOT_INTEGER</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The &#39;depth&#39; parameter must be an integer.&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">depth</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">TypeCheckedValueError</span><span class="p">(</span><span class="s2">&quot;The &#39;depth&#39; parameter must be a positive integer.&quot;</span><span class="p">,</span>
-                                    <span class="n">tag</span><span class="o">=</span><span class="n">ImmutableErrorTag</span><span class="o">.</span><span class="n">DEPTH_NOT_POSITIVE_INTEGER</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The &#39;depth&#39; parameter must be a positive integer.&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">message</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">TypeCheckedTypeError</span><span class="p">(</span><span class="s2">&quot;The &#39;message&#39; parameter must be a string if provided.&quot;</span><span class="p">,</span>
-                                   <span class="n">tag</span><span class="o">=</span><span class="n">ImmutableErrorTag</span><span class="o">.</span><span class="n">MESSAGE_NOT_STRING</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The &#39;message&#39; parameter must be a string if provided.&quot;</span><span class="p">)</span>
     <span class="n">message</span> <span class="o">=</span> <span class="n">message</span> <span class="ow">or</span> <span class="s2">&quot;&#39;</span><span class="si">{name}</span><span class="s2">&#39; must be immutable.&quot;</span>
     <span class="n">formatted_message</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_immutable</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="nb">set</span><span class="p">(),</span> <span class="n">depth</span><span class="o">=</span><span class="n">depth</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">TypeCheckedTypeError</span><span class="p">(</span><span class="n">formatted_message</span><span class="p">,</span>
-                                   <span class="n">tag</span><span class="o">=</span><span class="n">ImmutableErrorTag</span><span class="o">.</span><span class="n">OBJECT_NOT_IMMUTABLE</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">TypeCheckError</span><span class="p">(</span><span class="n">formatted_message</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="n">ImmutableErrorTag</span><span class="o">.</span><span class="n">OBJECT_NOT_IMMUTABLE</span><span class="p">)</span>
     <span class="k">return</span> <span class="kc">True</span></div>
 
 
@@ -316,7 +306,11 @@
 <span class="sd">    It recursively checks container types to ensure all contained elements are also immutable.</span>
 
 <span class="sd">    :param Any obj: The object to check.</span>
+<span class="sd">    :param int depth: Maximum recursion depth to prevent infinite loops on cyclic references.</span>
 <span class="sd">    :return bool: True if the object is immutable, False otherwise.</span>
+<span class="sd">    :raises TypeError: If the &#39;depth&#39; parameter is not an integer.</span>
+<span class="sd">    :raises ValueError: If the &#39;depth&#39; parameter is not a positive integer.</span>
+<span class="sd">    :raises RecursionError: If the maximum recursion depth is exceeded.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_is_immutable</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="nb">set</span><span class="p">(),</span> <span class="n">depth</span><span class="o">=</span><span class="n">depth</span><span class="p">)</span></div>
 
@@ -328,7 +322,11 @@
 <span class="sd">    It recursively checks container types to ensure all contained elements are also immutable.</span>
 
 <span class="sd">    :param Any obj: The object to check.</span>
+<span class="sd">    :param set[int] parents: Set of object IDs to detect cycles.</span>
+<span class="sd">    :param int depth: Maximum recursion depth to prevent infinite loops on cyclic references.</span>
 <span class="sd">    :return bool: True if the object is immutable, False otherwise.</span>
+<span class="sd">    :raises TypeError: If the &#39;depth&#39; parameter is not an integer.</span>
+<span class="sd">    :raises RecursionError: If the maximum recursion depth is exceeded.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">new_id</span> <span class="o">=</span> <span class="nb">id</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">new_id</span> <span class="ow">in</span> <span class="n">parents</span><span class="p">:</span>
@@ -337,9 +335,8 @@
     <span class="n">parents</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_id</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">depth</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">parents</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">TypeCheckedRecursionError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Maximum recursion depth of </span><span class="si">{</span><span class="n">depth</span><span class="si">}</span><span class="s2"> reached while checking immutability.&quot;</span><span class="p">,</span>
-            <span class="n">tag</span><span class="o">=</span><span class="n">ImmutableErrorTag</span><span class="o">.</span><span class="n">RECURSION_LIMIT_EXCEEDED</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RecursionError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Maximum recursion depth of </span><span class="si">{</span><span class="n">depth</span><span class="si">}</span><span class="s2"> reached while checking immutability.&quot;</span><span class="p">)</span>
 
     <span class="n">immutable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 
@@ -477,7 +474,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=d86794f8"></script>
+</div><script src="../../../_static/documentation_options.js?v=9984e7ab"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

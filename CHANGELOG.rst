@@ -2,6 +2,13 @@
 TypeChecked Changelog
 =====================
 
+0.10.0-beta (2026-01-09)
+========================
+- Streamlined the exception handling in type checking functions by replacing
+  custom public TypeCheckedTypeError and TypeCheckedValueError exceptions with a
+  unified TypeCheckError exception, simplifying the codebase and improving usability
+  by reducing the number of exception types users need to handle.
+
 0.9.0-beta (2026-01-08)
 =======================
 

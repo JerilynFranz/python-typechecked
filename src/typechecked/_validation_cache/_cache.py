@@ -5,7 +5,7 @@ from collections import OrderedDict
 from collections.abc import Hashable
 from typing import Any
 
-from .._exceptions import TypeCheckedTypeError, TypeCheckedValueError
+from .._exceptions import TypeCheckError
 from ._cache_entry import CacheEntry, ObjectWrapper
 from ._cache_key import CacheKey
 from ._error_tags import ValidationCacheErrorTag
@@ -129,8 +129,8 @@ class ValidationCache:
         Cache trimming is performed within a thread-safe lock.
 
         :param int size: The maximum size of the cache.
-        :raises TypeCheckedTypeError: If size is not an integer.
-        :raises TypeCheckedValueError: If size is less than 1.
+        :raises TypeError: If size is not an integer.
+        :raises ValueError: If size is less than 1.
         """
         log.debug("trim_cache: Cache size %d. Trimming cache to size %d", len(self._cache), size)
 
@@ -139,15 +139,11 @@ class ValidationCache:
                 return
 
         if not isinstance(size, int):
-            raise TypeCheckedTypeError(
-                'Cache size must be an integer.',
-                tag=ValidationCacheErrorTag.INVALID_CACHE_SIZE_TYPE)
+            raise TypeError('Cache size must be an integer.')
 
         # Minimum size to ensure effective caching and no exceptions during trimming
         if size < self._min_cache_size:
-            raise TypeCheckedValueError(
-                f'Cache size must be at least {self._min_cache_size}.',
-                tag=ValidationCacheErrorTag.INVALID_CACHE_SIZE)
+            raise ValueError(f'Cache size must be at least {self._min_cache_size}.')
 
         with self._cache_lock:
             target_size = max(int(size * 0.75), 2)  # backstopped at 2 to prevent exceptions

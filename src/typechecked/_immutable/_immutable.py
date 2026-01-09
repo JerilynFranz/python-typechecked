@@ -5,7 +5,7 @@ from enum import Enum
 from types import MappingProxyType, NoneType
 from typing import Annotated, Any, TypeGuard, get_args, get_origin, is_typeddict
 
-from .._exceptions import TypeCheckedRecursionError, TypeCheckedTypeError, TypeCheckedValueError
+from .._exceptions import TypeCheckError
 from .._log import log
 from ._error_tags import ImmutableErrorTag
 from ._protocol import Immutable, ImmutableTypedDict
@@ -44,31 +44,24 @@ def validate_immutable(obj: Any, name: str, message: str | None = None, depth: i
     :param int depth: Maximum recursion depth to prevent infinite loops on cyclic references.
     :return bool: True if the object is immutable.
 
-    :raises TypeCheckedRecursionError: If the maximum recursion depth is exceeded while checking immutability.
-    :raises TypeCheckedTypeError: If the object is not immutable or if parameters are of incorrect types.
-    :raises TypeCheckedValueError: If parameters have invalid values.
+    :raises TypeCheckError: If the object is not immutable
+    :raises TypeError: If the calling parameters are of incorrect types.
+    :raises ValueError: If the calling parameters have invalid values.
     """
     if not isinstance(name, str):
-        raise TypeCheckedTypeError("The 'name' parameter must be a string.",
-                                   tag=ImmutableErrorTag.NAME_NOT_STRING)
+        raise TypeError("The 'name' parameter must be a string.")
     if name.strip() == "":
-        raise TypeCheckedValueError(
-            "The 'name' parameter must be a non-blank string.",
-            tag=ImmutableErrorTag.NAME_IS_EMPTY_OR_BLANK_STRING)
+        raise ValueError("The 'name' parameter must be a non-blank string.")
     if not isinstance(depth, int):
-        raise TypeCheckedTypeError("The 'depth' parameter must be an integer.",
-                                   tag=ImmutableErrorTag.DEPTH_NOT_INTEGER)
+        raise TypeError("The 'depth' parameter must be an integer.")
     if depth <= 0:
-        raise TypeCheckedValueError("The 'depth' parameter must be a positive integer.",
-                                    tag=ImmutableErrorTag.DEPTH_NOT_POSITIVE_INTEGER)
+        raise ValueError("The 'depth' parameter must be a positive integer.")
     if message is not None and not isinstance(message, str):
-        raise TypeCheckedTypeError("The 'message' parameter must be a string if provided.",
-                                   tag=ImmutableErrorTag.MESSAGE_NOT_STRING)
+        raise TypeError("The 'message' parameter must be a string if provided.")
     message = message or "'{name}' must be immutable."
     formatted_message = message.format(name=name)
     if not _is_immutable(obj, parents=set(), depth=depth):
-        raise TypeCheckedTypeError(formatted_message,
-                                   tag=ImmutableErrorTag.OBJECT_NOT_IMMUTABLE)
+        raise TypeCheckError(formatted_message, tag=ImmutableErrorTag.OBJECT_NOT_IMMUTABLE)
     return True
 
 
@@ -78,7 +71,11 @@ def is_immutable(obj: Any, depth: int = 200) -> bool:
     It recursively checks container types to ensure all contained elements are also immutable.
 
     :param Any obj: The object to check.
+    :param int depth: Maximum recursion depth to prevent infinite loops on cyclic references.
     :return bool: True if the object is immutable, False otherwise.
+    :raises TypeError: If the 'depth' parameter is not an integer.
+    :raises ValueError: If the 'depth' parameter is not a positive integer.
+    :raises RecursionError: If the maximum recursion depth is exceeded.
     """
     return _is_immutable(obj, parents=set(), depth=depth)
 
@@ -89,7 +86,11 @@ def _is_immutable(obj: Any, parents: set[int], depth: int) -> bool:
     It recursively checks container types to ensure all contained elements are also immutable.
 
     :param Any obj: The object to check.
+    :param set[int] parents: Set of object IDs to detect cycles.
+    :param int depth: Maximum recursion depth to prevent infinite loops on cyclic references.
     :return bool: True if the object is immutable, False otherwise.
+    :raises TypeError: If the 'depth' parameter is not an integer.
+    :raises RecursionError: If the maximum recursion depth is exceeded.
     """
     new_id = id(obj)
     if new_id in parents:
@@ -98,9 +99,8 @@ def _is_immutable(obj: Any, parents: set[int], depth: int) -> bool:
     parents.add(new_id)
 
     if depth < len(parents):
-        raise TypeCheckedRecursionError(
-            f"Maximum recursion depth of {depth} reached while checking immutability.",
-            tag=ImmutableErrorTag.RECURSION_LIMIT_EXCEEDED)
+        raise RecursionError(
+            f"Maximum recursion depth of {depth} reached while checking immutability.")
 
     immutable: bool = False
 

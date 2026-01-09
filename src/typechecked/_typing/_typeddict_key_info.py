@@ -14,7 +14,7 @@ import sys
 from typing import get_args, get_origin
 
 from .._error_tags import TypedDictKeyInfoErrorTag
-from .._exceptions import TypeCheckedTypeError
+from .._exceptions import TypeCheckError
 from .._log import log
 
 __all__ = ('TypedDictKeyInfo',)
@@ -83,7 +83,7 @@ class TypedDictKeyInfo:
 
         origin = get_origin(current_type)
         if origin in {Required, NotRequired, ReadOnly}:
-            raise TypeCheckedTypeError(
+            raise TypeCheckError(
                 f"TypedDict key '{key}' in class {td_cls.__name__} has unprocessed "
                 f"'{origin}' wrapper. Failed to 'unwrap' type.",
                 tag=TypedDictKeyInfoErrorTag.NESTED_REQUIRED_NOTREQUIRED_READONLY)

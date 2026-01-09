@@ -1,5 +1,5 @@
 """Type hint related validators and utilities."""
-from ._exceptions import ErrorTag, TypeCheckedRecursionError, TypeCheckedTypeError, TypeCheckedValueError
+from ._exceptions import ErrorTag, TypeCheckError
 from ._immutable import (
     Immutable,
     ImmutableTypedDict,
@@ -19,8 +19,8 @@ __all__ = [
     "validate_immutable",
     "Immutable",
     "ImmutableTypedDict",
-    "TypeCheckedValueError",
-    "TypeCheckedTypeError",
-    "TypeCheckedRecursionError",
+    "TypeCheckError",
+    "TypeCheckError",
+    "TypeCheckError",
     "ErrorTag",
 ]

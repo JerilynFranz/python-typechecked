@@ -7,7 +7,7 @@ from .._cache import _CACHE
 from .._check_result import CheckResult
 from .._constants import IS_IMMUTABLE, IS_VALID, NOT_IMMUTABLE, NOT_VALID
 from .._error_tags import TypeHintsErrorTag
-from .._exceptions import TypeCheckedTypeError, TypeCheckedValueError
+from .._exceptions import TypeCheckError
 from .._log import log
 from .._options import Options
 from .._validation_state import ValidationState
@@ -35,8 +35,7 @@ def _check_collections_abc_mapping(  # pylint: disable=too-many-locals
     :param set[ValidationState] parents: Set of parent object IDs to detect cycles.
     :param bool raise_on_error: Whether to raise an exception on validation failure.
     :return CheckResult: Tuple indicating (is_valid, is_immutable).
-    :raises TypeCheckedTypeError: If raise_on_error is True and validation fails.
-    :raises TypeCheckedValueError: If origin is not a subclass of Mapping.
+    :raises TypeCheckError: If raise_on_error is True and validation fails.
     """
     from .._typechecked import _check_instance_of_typehint  # pylint: disable=import-outside-toplevel
 
@@ -44,13 +43,13 @@ def _check_collections_abc_mapping(  # pylint: disable=too-many-locals
         "_container_check_mapping: Checking object of type '%s' against Mapping type hint '%s'",
         type(obj).__name__, type_hint)
     if not issubclass(origin, Mapping):
-        raise TypeCheckedValueError(
+        raise TypeCheckError(
             f"Type hint '{type_hint}' is not a Mapping.",
             tag=TypeHintsErrorTag.INVALID_TYPE_HINT)
 
     if not isinstance(obj, origin):
         if raise_on_error:
-            raise TypeCheckedTypeError(
+            raise TypeCheckError(
                 f"Object of type '{type(obj).__name__}' is not an instance of '{origin.__name__}' "
                 f"for type hint '{type_hint}'.",
                 tag=TypeHintsErrorTag.VALIDATION_FAILED)
@@ -61,7 +60,7 @@ def _check_collections_abc_mapping(  # pylint: disable=too-many-locals
     if cached_result is not None:  # Only cached if Immutable
         if cached_result or not raise_on_error:
             return CheckResult(cached_result, IS_IMMUTABLE)
-        raise TypeCheckedTypeError(
+        raise TypeCheckError(
             f"Object of type '{type(obj)}' does not match type hint '{type_hint}'.",
             tag=TypeHintsErrorTag.VALIDATION_FAILED)
 
@@ -73,7 +72,7 @@ def _check_collections_abc_mapping(  # pylint: disable=too-many-locals
         case 2:
             key_type, value_type = args
         case _:
-            raise TypeCheckedValueError(
+            raise TypeCheckError(
                 f"Mapping type hint '{origin}' has invalid number of arguments: {len(args)}",
                 tag=TypeHintsErrorTag.INVALID_TYPE_HINT)
     new_parents = parents | {ValidationState(id(obj), type_hint, "mapping")}
@@ -84,7 +83,7 @@ def _check_collections_abc_mapping(  # pylint: disable=too-many-locals
             key, key_type, options, new_parents, raise_on_error, context="mapping_key")
         if not is_valid:
             if raise_on_error:
-                raise TypeCheckedTypeError(
+                raise TypeCheckError(
                     f"Key '{key}' in Mapping does not match type hint '{key_type}'.",
                     tag=TypeHintsErrorTag.VALIDATION_FAILED)
             return CheckResult(NOT_VALID, NOT_IMMUTABLE)
@@ -95,7 +94,7 @@ def _check_collections_abc_mapping(  # pylint: disable=too-many-locals
             value, value_type, options, new_parents, raise_on_error, context="mapping_value")
         if not is_valid:
             if raise_on_error:
-                raise TypeCheckedTypeError(
+                raise TypeCheckError(
                     f"Value for key '{key}' in Mapping does not match type hint '{value_type}'.",
                     tag=TypeHintsErrorTag.VALIDATION_FAILED)
             return CheckResult(NOT_VALID, NOT_IMMUTABLE)

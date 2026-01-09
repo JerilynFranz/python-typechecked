@@ -6,6 +6,6 @@ It is parsed by the build system and should only contain simple assignments
 """
 __author__ = "Jerilyn Franz"
 __copyright__ = "2025, Jerilyn Franz"
-__version__ = "0.9.0-beta"
-__release__ = "0.9.0-beta"
+__version__ = "0.10.0-beta"
+__release__ = "0.10.0-beta"
 __project__ = "TypeChecked"

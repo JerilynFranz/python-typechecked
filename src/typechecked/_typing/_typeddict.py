@@ -7,7 +7,7 @@ from .._cache import _CACHE
 from .._check_result import CheckResult
 from .._constants import IS_IMMUTABLE, IS_VALID, NOT_IMMUTABLE, NOT_VALID
 from .._error_tags import TypeHintsErrorTag
-from .._exceptions import TypeCheckedTypeError, TypeCheckedValueError
+from .._exceptions import TypeCheckError
 from .._immutable import Immutable, is_immutable_typeddict_typehint
 from .._log import log
 from .._options import Options
@@ -43,8 +43,7 @@ def _check_typing_typeddict(  # pylint: disable=too-many-locals,too-many-return-
     :param set[ValidationState] parents: Set of parent object IDs to detect cycles.
     :param bool raise_on_error: Whether to raise an exception on validation failure.
     :return CheckResult: Tuple indicating (is_valid, is_immutable).
-    :raises TypeCheckedTypeError: If raise_on_error is True and validation fails.
-    :raises TypeCheckedValueError: If type_hint is not a TypedDict.
+    :raises TypeCheckError: If raise_on_error is True and validation fails.
     """
     from .._typechecked import _check_instance_of_typehint  # pylint: disable=import-outside-toplevel
 
@@ -53,7 +52,7 @@ def _check_typing_typeddict(  # pylint: disable=too-many-locals,too-many-return-
         type(obj).__name__, type_hint)
     # Fast path checks
     if not is_typeddict(type_hint):
-        raise TypeCheckedValueError(
+        raise TypeCheckError(
             f"Type hint '{type_hint}' is not a TypedDict.",
             tag=TypeHintsErrorTag.INVALID_TYPE_HINT)
 
@@ -62,7 +61,7 @@ def _check_typing_typeddict(  # pylint: disable=too-many-locals,too-many-return-
     if cached_result is not None:  # Only cached if Immutable
         if cached_result or not raise_on_error:
             return CheckResult(cached_result, IS_IMMUTABLE)
-        raise TypeCheckedTypeError(
+        raise TypeCheckError(
             f"Object of type '{type(obj)}' does not match type hint '{type_hint}'.",
             tag=TypeHintsErrorTag.VALIDATION_FAILED)
 
@@ -70,14 +69,14 @@ def _check_typing_typeddict(  # pylint: disable=too-many-locals,too-many-return-
         if not isinstance(obj, dict):
             # Not instance of dict, cannot be a strict TypedDict instance
             if raise_on_error:
-                raise TypeCheckedTypeError(
+                raise TypeCheckError(
                     f"Object of type '{type(obj).__name__}' is not a dict, "
                     f"required for strict TypedDict type hint '{type_hint}'.",
                     tag=TypeHintsErrorTag.VALIDATION_FAILED)
             return CheckResult(NOT_VALID, NOT_IMMUTABLE)
     if not isinstance(obj, Mapping):  # This acts as a fast-fail for non-Mapping objects and a type guard
         if raise_on_error:
-            raise TypeCheckedTypeError(
+            raise TypeCheckError(
                 f"Object of type '{type(obj).__name__}' is not a Mapping, "
                 f"required for TypedDict type hint '{type_hint}'.",
                 tag=TypeHintsErrorTag.VALIDATION_FAILED)
@@ -89,7 +88,7 @@ def _check_typing_typeddict(  # pylint: disable=too-many-locals,too-many-return-
     # TypedDict keys must be strings
     if not all(isinstance(k, str) for k in obj.keys()):
         if raise_on_error:
-            raise TypeCheckedTypeError(
+            raise TypeCheckError(
                 f"TypedDict keys must be strings, found non-string keys in object of type '{type(obj).__name__}'.",
                 tag=TypeHintsErrorTag.VALIDATION_FAILED)
         return CheckResult(NOT_VALID, NOT_IMMUTABLE)
@@ -102,7 +101,7 @@ def _check_typing_typeddict(  # pylint: disable=too-many-locals,too-many-return-
     is_immutable_typed_dict: bool = is_immutable_typeddict_typehint(type_hint)
     if is_immutable_typed_dict and not container_is_immutable:
         if raise_on_error:
-            raise TypeCheckedTypeError(
+            raise TypeCheckError(
                 f"TypedDict type hint '{type_hint}' is defined as Immutable, "
                 f"but object of type '{type(obj).__name__}' is not Immutable.",
                 tag=TypeHintsErrorTag.VALIDATION_FAILED)
@@ -137,7 +136,7 @@ def _check_typing_typeddict(  # pylint: disable=too-many-locals,too-many-return-
                     "but not defined in type hint '%s'. optionals = %s, required = %s",
                     key, type_hint, optional_keys, required_keys)
                 if raise_on_error:
-                    raise TypeCheckedTypeError(
+                    raise TypeCheckError(
                         f"Extra key '{key}' found in TypedDict, but not defined in type hint '{type_hint}'."
                         f"optional = {optional_keys}, required = {required_keys}",
                         tag=TypeHintsErrorTag.VALIDATION_FAILED)
@@ -153,7 +152,7 @@ def _check_typing_typeddict(  # pylint: disable=too-many-locals,too-many-return-
                     raise_on_error=False, context="typeddict_extra_item")
                 if not check_result.valid:
                     if raise_on_error:
-                        raise TypeCheckedTypeError(
+                        raise TypeCheckError(
                             f"Extra key '{key}' in TypedDict does not match extra_items type hint "
                             f"'{extra_items_type_hint}'.",
                             tag=TypeHintsErrorTag.VALIDATION_FAILED)
@@ -182,7 +181,7 @@ def _check_typing_typeddict(  # pylint: disable=too-many-locals,too-many-return-
                 key, value_type, type_hint)
             if value_type is Never:
                 if raise_on_error:
-                    raise TypeCheckedTypeError(
+                    raise TypeCheckError(
                         f"Key '{key}' in TypedDict cannot have a value because it is specified as type 'Never'.",
                         tag=TypeHintsErrorTag.VALIDATION_FAILED)
                 log.debug(
@@ -194,7 +193,7 @@ def _check_typing_typeddict(  # pylint: disable=too-many-locals,too-many-return-
                     "_container_check_typeddict: Required key '%s' has value 'Never' in TypedDict object for "
                     "type hint '%s'", key, type_hint)
                 if raise_on_error:
-                    raise TypeCheckedTypeError(
+                    raise TypeCheckError(
                         f"Required key '{key}' in TypedDict cannot have value 'Never'.",
                         tag=TypeHintsErrorTag.VALIDATION_FAILED)
                 return CheckResult(NOT_VALID, NOT_IMMUTABLE)
@@ -208,7 +207,7 @@ def _check_typing_typeddict(  # pylint: disable=too-many-locals,too-many-return-
                     "_container_check_typeddict: Key '%s' in TypedDict object does not match "
                     "type hint '%s'", key, dict_key_info.value_type)
                 if raise_on_error:
-                    raise TypeCheckedTypeError(
+                    raise TypeCheckError(
                         f"Value for key '{key}' in TypedDict does not match type hint '{dict_key_info.value_type}'.",
                         tag=TypeHintsErrorTag.VALIDATION_FAILED)
                 return CheckResult(NOT_VALID, NOT_IMMUTABLE)
@@ -219,7 +218,7 @@ def _check_typing_typeddict(  # pylint: disable=too-many-locals,too-many-return-
                     "_container_check_typeddict: Required key '%s' missing in TypedDict object for "
                     "type hint '%s'", key, type_hint)
                 if raise_on_error:
-                    raise TypeCheckedTypeError(
+                    raise TypeCheckError(
                         f"Required key '{key}' missing in TypedDict.",
                         tag=TypeHintsErrorTag.VALIDATION_FAILED)
                 return CheckResult(NOT_VALID, NOT_IMMUTABLE)

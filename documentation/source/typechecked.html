@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>typechecked package - TypeChecked 0.9.0-beta documentation</title>
+        <title>typechecked package - TypeChecked 0.10.0-beta documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=c309799c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=d998a142" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -164,7 +164,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">TypeChecked 0.9.0-beta documentation</div></a>
+      <a href="../index.html"><div class="brand">TypeChecked 0.10.0-beta documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -185,7 +185,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">TypeChecked 0.9.0-beta documentation</span>
+  <span class="sidebar-brand-text">TypeChecked 0.10.0-beta documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -383,8 +383,8 @@ at runtime and cannot be distinguished from mutable dictionaries.</p>
 </dd></dl>
 
 <dl class="py exception">
-<dt class="sig sig-object py" id="typechecked.TypeCheckedRecursionError">
-<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">typechecked.</span></span><span class="sig-name descname"><span class="pre">TypeCheckedRecursionError</span></span><span class="sig-paren">(</span>
+<dt class="sig sig-object py" id="typechecked.TypeCheckError">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">typechecked.</span></span><span class="sig-name descname"><span class="pre">TypeCheckError</span></span><span class="sig-paren">(</span>
 
 <dl>
 <dd><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>,</dd>
@@ -392,55 +392,14 @@ at runtime and cannot be distinguished from mutable dictionaries.</p>
 <dd><em class="sig-param"><span class="n"><span class="pre">tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#typechecked.ErrorTag" title="typechecked._exceptions._error_tag.ErrorTag"><span class="pre">ErrorTag</span></a></span></em>,</dd>
 </dl>
 
-<span class="sig-paren">)</span><a class="reference internal" href="../_modules/typechecked/_exceptions/_recursion_error.html#TypeCheckedRecursionError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typechecked.TypeCheckedRecursionError" title="Link to this definition">🔗</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TaggedException</span></code>[<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RecursionError" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RecursionError</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RecursionError" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RecursionError</span></code></a></p>
-<p>Exception raised when maximum recursion depth is exceeded in typechecked.</p>
-<dl class="simple">
-<dt>Usage:</dt><dd><dl class="simple">
-<dt>raise TypeCheckedRecursionError(“An error occurred”,</dt><dd><p>tag=MyErrorTags.SOME_ERROR)</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>msg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The error message.</p></li>
-<li><p><strong>tag</strong> (<a class="reference internal" href="#typechecked.ErrorTag" title="typechecked.ErrorTag"><em>ErrorTag</em></a>) – The tag code.</p></li>
-</ul>
-</dd>
-</dl>
-<p>Raises a TypeCheckedRecursionError with the given message and tag.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>msg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The error message.</p></li>
-<li><p><strong>tag</strong> (<a class="reference internal" href="#typechecked.ErrorTag" title="typechecked.ErrorTag"><em>ErrorTag</em></a>) – The tag code.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="typechecked.TypeCheckedTypeError">
-<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">typechecked.</span></span><span class="sig-name descname"><span class="pre">TypeCheckedTypeError</span></span><span class="sig-paren">(</span>
-
-<dl>
-<dd><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>,</dd>
-<dd><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>,</dd>
-<dd><em class="sig-param"><span class="n"><span class="pre">tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#typechecked.ErrorTag" title="typechecked._exceptions._error_tag.ErrorTag"><span class="pre">ErrorTag</span></a></span></em>,</dd>
-</dl>
-
-<span class="sig-paren">)</span><a class="reference internal" href="../_modules/typechecked/_exceptions/_type_error.html#TypeCheckedTypeError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typechecked.TypeCheckedTypeError" title="Link to this definition">🔗</a></dt>
+<span class="sig-paren">)</span><a class="reference internal" href="../_modules/typechecked/_exceptions/_type_check_error.html#TypeCheckError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typechecked.TypeCheckError" title="Link to this definition">🔗</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TaggedException</span></code>[<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeError</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeError</span></code></a></p>
-<p>Base class for all TypeChecked TypeErrors.</p>
-<p>It differs from a standard TypeError by the addition of a
-tag code used to very specifically identify where the error
-was thrown in the code for testing and development support.</p>
-<p>This tag code does not have a direct semantic meaning except to identify
-the specific code throwing the exception for tests.</p>
+<p>Class for all TypeChecked type check errors.</p>
+<p>It is a specialized TypeError that includes a tag code to identify
+the specific location in the code where the error was raised.</p>
+<p>This tag code is primarily used for testing and debugging purposes.</p>
 <dl class="simple">
-<dt>Usage:</dt><dd><p>raise TypeCheckedTypeError(“An error occurred”, tag=MyErrorTags.SOME_ERROR)</p>
+<dt>Usage:</dt><dd><p>raise TypeCheckError(“An error occurred”, tag=MyErrorTags.SOME_ERROR)</p>
 </dd>
 </dl>
 <dl class="field-list simple">
@@ -451,43 +410,7 @@ the specific code throwing the exception for tests.</p>
 </ul>
 </dd>
 </dl>
-<p>Raises a TypeCheckedTypeError with the given message and tag.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>msg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The error message.</p></li>
-<li><p><strong>tag</strong> (<a class="reference internal" href="#typechecked.ErrorTag" title="typechecked.ErrorTag"><em>ErrorTag</em></a>) – The tag code.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="typechecked.TypeCheckedValueError">
-<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">typechecked.</span></span><span class="sig-name descname"><span class="pre">TypeCheckedValueError</span></span><span class="sig-paren">(</span>
-
-<dl>
-<dd><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>,</dd>
-<dd><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>,</dd>
-<dd><em class="sig-param"><span class="n"><span class="pre">tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#typechecked.ErrorTag" title="typechecked._exceptions._error_tag.ErrorTag"><span class="pre">ErrorTag</span></a></span></em>,</dd>
-</dl>
-
-<span class="sig-paren">)</span><a class="reference internal" href="../_modules/typechecked/_exceptions/_value_error.html#TypeCheckedValueError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#typechecked.TypeCheckedValueError" title="Link to this definition">🔗</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TaggedException</span></code>[<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></a></p>
-<p>Base class for all TypeChecked ValueErrors.</p>
-<p>It differs from a standard ValueError by the addition of a
-tag code used to very specifically identify where the error
-was thrown in the code for testing and development support.</p>
-<p>This tag code does not have a direct semantic meaning except to identify
-the specific code throwing the exception for tests.</p>
-<dl class="simple">
-<dt>Usage:</dt><dd><p>raise TypeCheckedValueError(“An error occurred”, tag=MyErrorTags.SOME_ERROR)</p>
-</dd>
-<dt>Args:</dt><dd><p>msg (str): The error message.
-tag (ErrorTag): The tag code.</p>
-</dd>
-</dl>
-<p>Raises a TypeCheckedValueError with the given message and tag.</p>
+<p>Raises a TypeCheckError with the given message and tag.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -518,10 +441,20 @@ tag (ErrorTag): The tag code.</p>
 <p>It recursively checks container types to ensure all contained elements are also immutable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>obj</strong> (<em>Any</em>) – The object to check.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> (<em>Any</em>) – The object to check.</p></li>
+<li><p><strong>depth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Maximum recursion depth to prevent infinite loops on cyclic references.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return bool<span class="colon">:</span></dt>
 <dd class="field-even"><p>True if the object is immutable, False otherwise.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If the ‘depth’ parameter is not an integer.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the ‘depth’ parameter is not a positive integer.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RecursionError" title="(in Python v3.14)"><strong>RecursionError</strong></a> – If the maximum recursion depth is exceeded.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -645,7 +578,7 @@ in general. You should benchmark your specific use case if performance is a conc
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Type hints cannot be strings.  If you pass a string type hint (e.g., a forward reference),
-a <a class="reference internal" href="#typechecked.TypeCheckedValueError" title="typechecked.TypeCheckedValueError"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeCheckedValueError</span></code></a> will be raised.</p>
+a <code class="xref py py-class docutils literal notranslate"><span class="pre">TypeCheckedValueError</span></code> will be raised.</p>
 <p>The object itself can be of any type, including user-defined classes
 and use forward references, but the type hint itself must be a valid type hint object
 without using a string to represent types.</p>
@@ -699,6 +632,9 @@ will always be treated as non-cachable.</p></li>
 <dt class="field-even">Return bool<span class="colon">:</span></dt>
 <dd class="field-even"><p><cite>True</cite> if the object matches the type hint, <cite>False</cite> otherwise.</p>
 </dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#typechecked.TypeCheckError" title="typechecked.TypeCheckError"><strong>TypeCheckError</strong></a> – If any failure occurs during validation.</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -731,9 +667,9 @@ will always be treated as non-cachable.</p></li>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="#typechecked.TypeCheckedRecursionError" title="typechecked.TypeCheckedRecursionError"><strong>TypeCheckedRecursionError</strong></a> – If the maximum recursion depth is exceeded while checking immutability.</p></li>
-<li><p><a class="reference internal" href="#typechecked.TypeCheckedTypeError" title="typechecked.TypeCheckedTypeError"><strong>TypeCheckedTypeError</strong></a> – If the object is not immutable or if parameters are of incorrect types.</p></li>
-<li><p><a class="reference internal" href="#typechecked.TypeCheckedValueError" title="typechecked.TypeCheckedValueError"><strong>TypeCheckedValueError</strong></a> – If parameters have invalid values.</p></li>
+<li><p><a class="reference internal" href="#typechecked.TypeCheckError" title="typechecked.TypeCheckError"><strong>TypeCheckError</strong></a> – If the object is not immutable</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If the calling parameters are of incorrect types.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the calling parameters have invalid values.</p></li>
 </ul>
 </dd>
 </dl>
@@ -782,9 +718,7 @@ will always be treated as non-cachable.</p></li>
 <li><a class="reference internal" href="#typechecked.ErrorTag"><code class="docutils literal notranslate"><span class="pre">ErrorTag</span></code></a></li>
 <li><a class="reference internal" href="#typechecked.Immutable"><code class="docutils literal notranslate"><span class="pre">Immutable</span></code></a></li>
 <li><a class="reference internal" href="#typechecked.ImmutableTypedDict"><code class="docutils literal notranslate"><span class="pre">ImmutableTypedDict</span></code></a></li>
-<li><a class="reference internal" href="#typechecked.TypeCheckedRecursionError"><code class="docutils literal notranslate"><span class="pre">TypeCheckedRecursionError</span></code></a></li>
-<li><a class="reference internal" href="#typechecked.TypeCheckedTypeError"><code class="docutils literal notranslate"><span class="pre">TypeCheckedTypeError</span></code></a></li>
-<li><a class="reference internal" href="#typechecked.TypeCheckedValueError"><code class="docutils literal notranslate"><span class="pre">TypeCheckedValueError</span></code></a></li>
+<li><a class="reference internal" href="#typechecked.TypeCheckError"><code class="docutils literal notranslate"><span class="pre">TypeCheckError</span></code></a></li>
 <li><a class="reference internal" href="#typechecked.clear_typechecked_cache"><code class="docutils literal notranslate"><span class="pre">clear_typechecked_cache()</span></code></a></li>
 <li><a class="reference internal" href="#typechecked.is_immutable"><code class="docutils literal notranslate"><span class="pre">is_immutable()</span></code></a></li>
 <li><a class="reference internal" href="#typechecked.is_immutable_data_typehint"><code class="docutils literal notranslate"><span class="pre">is_immutable_data_typehint()</span></code></a></li>
@@ -802,7 +736,7 @@ will always be treated as non-cachable.</p></li>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=9984e7ab"></script>
+</div><script src="../_static/documentation_options.js?v=e83610f5"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

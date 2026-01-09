@@ -1,14 +1,10 @@
 """Custom exceptions for the typechecked package."""
 from ._error_tag import ErrorTag
 from ._tagged_exception import TaggedException
-from ._recursion_error import TypeCheckedRecursionError
-from ._type_error import TypeCheckedTypeError
-from ._value_error import TypeCheckedValueError
+from ._type_check_error import TypeCheckError
 
 __all__ = [
     "TaggedException",
-    "TypeCheckedRecursionError",
-    "TypeCheckedTypeError",
-    "TypeCheckedValueError",
+    "TypeCheckError",
     "ErrorTag",
 ]

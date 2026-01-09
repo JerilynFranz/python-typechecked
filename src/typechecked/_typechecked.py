@@ -8,7 +8,7 @@ from ._cache import _CACHE
 from ._check_result import CheckResult
 from ._constants import IS_IMMUTABLE, IS_VALID, NOT_IMMUTABLE, NOT_VALID
 from ._error_tags import TypeHintsErrorTag
-from ._exceptions import TypeCheckedTypeError, TypeCheckedValueError
+from ._exceptions import TypeCheckError
 from ._generic import _check_generic
 from ._immutable import is_immutable
 from ._log import log
@@ -200,6 +200,7 @@ def isinstance_of_typehint(
         The internal default set includes NoneType, bool, int, float, complex, str, and bytes and they
         will always be treated as non-cachable.
     :return bool: `True` if the object matches the type hint, `False` otherwise.
+    :raises TypeCheckError: If any failure occurs during validation.
     """
     validate.type_hint_arg(type_hint)
     validate.depth_arg(depth)
@@ -244,7 +245,7 @@ def _check_instance_of_typehint(  # pylint: disable=too-many-return-statements  
     if cached_result is not None:  # Only cached if Immutable
         if cached_result or not raise_on_error:
             return CheckResult(cached_result, IS_IMMUTABLE)
-        raise TypeCheckedTypeError(
+        raise TypeCheckError(
             f"Object of type '{type(obj).__name__}' is not an instance of type hint '{type_hint}'",
             tag=TypeHintsErrorTag.TYPE_HINT_MISMATCH)
 
@@ -259,7 +260,7 @@ def _check_instance_of_typehint(  # pylint: disable=too-many-return-statements  
     current_state = ValidationState(id(obj), type_hint, context)
     if current_state in parents:
         if raise_on_error:
-            raise TypeCheckedTypeError(
+            raise TypeCheckError(
                 f"Cycle detected in object graph for object of type '{type(obj).__name__}'.",
                 tag=TypeHintsErrorTag.CYCLIC_REFERENCE_DETECTED)
         return CheckResult(NOT_VALID, NOT_IMMUTABLE)
@@ -270,7 +271,7 @@ def _check_instance_of_typehint(  # pylint: disable=too-many-return-statements  
     if origin is not None and origin.__module__ == 'typing':
         if origin.__name__ in {'Final', 'ClassVar', 'Annotated'}:
             if not args:
-                raise TypeCheckedValueError(
+                raise TypeCheckError(
                     f"{origin.__name__} type hint '{type_hint}' has no arguments.",
                     tag=TypeHintsErrorTag.INVALID_TYPE_HINT)
             type_hint = args[0]
@@ -281,7 +282,7 @@ def _check_instance_of_typehint(  # pylint: disable=too-many-return-statements  
         supertype = type_hint.__supertype__
         if not isinstance(obj, supertype):
             if raise_on_error:
-                raise TypeCheckedTypeError(
+                raise TypeCheckError(
                     f"Object of type '{type(obj).__name__}' is not an instance of NewType supertype '{supertype}'",
                     tag=TypeHintsErrorTag.TYPE_HINT_MISMATCH)
             return CheckResult(NOT_VALID, NOT_IMMUTABLE)
@@ -309,7 +310,7 @@ def _check_instance_of_typehint(  # pylint: disable=too-many-return-statements  
 
     if type_hint in {None, NoneType}:
         if raise_on_error:
-            raise TypeCheckedTypeError(
+            raise TypeCheckError(
                 f"Object of type '{type(obj).__name__}' is not None for type hint '{type_hint}'",
                 tag=TypeHintsErrorTag.TYPE_HINT_MISMATCH)
         return CheckResult(NOT_VALID, NOT_IMMUTABLE)
@@ -329,7 +330,7 @@ def _check_instance_of_typehint(  # pylint: disable=too-many-return-statements  
         if isinstance(obj, type_hint):
             return CheckResult(IS_VALID, IS_IMMUTABLE)
         if raise_on_error:
-            raise TypeCheckedTypeError(
+            raise TypeCheckError(
                 f"Object of type '{type(obj).__name__}' does not match primitive type hint '{type_hint}'",
                 tag=TypeHintsErrorTag.VALIDATION_FAILED)
         return CheckResult(NOT_VALID, IS_IMMUTABLE)
@@ -350,7 +351,7 @@ def _check_instance_of_typehint(  # pylint: disable=too-many-return-statements  
         _CACHE.add_cache_entry(type_hint, obj, result.valid, options.noncachable_types)
 
     if raise_on_error and not result.valid:
-        raise TypeCheckedTypeError(
+        raise TypeCheckError(
             f"Object of type '{type(obj).__name__}' is not an instance of type hint '{type_hint}'",
             tag=TypeHintsErrorTag.TYPE_HINT_MISMATCH)
 
@@ -378,7 +379,7 @@ def _check_none_instance_of_typehint(
     :return CheckResult: Tuple indicating (is_valid, is_immutable).
     """
     if obj is not None:  # Sanity check for bad calls
-        raise TypeCheckedValueError(
+        raise TypeCheckError(
             f"Object is not None, got '{obj}'.",
             tag=TypeHintsErrorTag.INVALID_NONE_CHECK)
 
@@ -386,7 +387,7 @@ def _check_none_instance_of_typehint(
     if cached_result is not None:  # Only cached if Immutable
         if cached_result or not raise_on_error:
             return CheckResult(cached_result, IS_IMMUTABLE)
-        raise TypeCheckedTypeError(
+        raise TypeCheckError(
             f"Object of type '{type(obj)}' does not match type hint '{type_hint}'.",
             tag=TypeHintsErrorTag.VALIDATION_FAILED)
 
@@ -407,7 +408,7 @@ def _check_none_instance_of_typehint(
     _CACHE.add_cache_entry(type_hint, obj, check_result.immutable, options.noncachable_types)
 
     if raise_on_error:
-        raise TypeCheckedTypeError(
+        raise TypeCheckError(
             f"Type hint '{type_hint}' does not allow None.",
             tag=TypeHintsErrorTag.VALIDATION_FAILED)
 

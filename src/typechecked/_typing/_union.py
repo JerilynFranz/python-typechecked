@@ -6,7 +6,7 @@ from .._cache import _CACHE
 from .._check_result import CheckResult
 from .._constants import NOT_VALID
 from .._error_tags import TypeHintsErrorTag
-from .._exceptions import TypeCheckedTypeError, TypeCheckedValueError
+from .._exceptions import TypeCheckError
 from .._immutable import is_immutable
 from .._log import log
 from .._options import Options
@@ -34,15 +34,14 @@ def _check_typing_union(
     :param set[ValidationState] parents: Set of parent object IDs to detect cycles.
     :param bool raise_on_error: Whether to raise an exception on validation failure.
     :return CheckResult: Tuple indicating (is_valid, is_immutable).
-    :raises TypeCheckedTypeError: If raise_on_error is True and validation fails
-    :raises TypeCheckedValueError: If type_hint is not a Union type.
+    :raises TypeCheckError: If raise_on_error is True and validation fails
     """
     from .._typechecked import _check_instance_of_typehint  # pylint: disable=import-outside-toplevel
 
     log.debug("_union_check: Checking object of type '%s' against Union type hint '%s'",
               type(obj).__name__, type_hint)
     if origin not in (Union, UnionType):  # Sanity check for bad calls
-        raise TypeCheckedValueError(
+        raise TypeCheckError(
             f"Type hint '{type_hint}' is not a Union type.",
             tag=TypeHintsErrorTag.INVALID_TYPE_HINT)
     new_parents = parents.copy()
@@ -60,7 +59,7 @@ def _check_typing_union(
             return CheckResult(is_valid, is_imm)
 
     if raise_on_error:
-        raise TypeCheckedTypeError(
+        raise TypeCheckError(
             f"Object of type '{type(obj)}' does not match type hint '{type_hint}'.",
             tag=TypeHintsErrorTag.VALIDATION_FAILED)
     return CheckResult(NOT_VALID, is_immutable(obj))

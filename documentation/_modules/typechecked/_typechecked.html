@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>typechecked._typechecked - TypeChecked 0.8.0-beta.1 documentation</title>
+        <title>typechecked._typechecked - TypeChecked 0.9.0-beta documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=c309799c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=d998a142" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">TypeChecked 0.8.0-beta.1 documentation</div></a>
+      <a href="../../index.html"><div class="brand">TypeChecked 0.9.0-beta documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
-  <span class="sidebar-brand-text">TypeChecked 0.8.0-beta.1 documentation</span>
+  <span class="sidebar-brand-text">TypeChecked 0.9.0-beta documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -192,12 +192,9 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+  <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../source/modules.html">src</a><input aria-label="Toggle navigation of src" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../source/typechecked.html">typechecked package</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">Index</a></li>
 </ul>
 
 </div>
@@ -241,7 +238,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">._check_result</span><span class="w"> </span><span class="kn">import</span> <span class="n">CheckResult</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IS_IMMUTABLE</span><span class="p">,</span> <span class="n">IS_VALID</span><span class="p">,</span> <span class="n">NOT_IMMUTABLE</span><span class="p">,</span> <span class="n">NOT_VALID</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._error_tags</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeHintsErrorTag</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">._exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeCheckedTypeError</span><span class="p">,</span> <span class="n">TypeCheckedValueError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeCheckError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._generic</span><span class="w"> </span><span class="kn">import</span> <span class="n">_check_generic</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._immutable</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_immutable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._log</span><span class="w"> </span><span class="kn">import</span> <span class="n">log</span>
@@ -438,6 +435,7 @@
 <span class="sd">        The internal default set includes NoneType, bool, int, float, complex, str, and bytes and they</span>
 <span class="sd">        will always be treated as non-cachable.</span>
 <span class="sd">    :return bool: `True` if the object matches the type hint, `False` otherwise.</span>
+<span class="sd">    :raises TypeCheckError: If any failure occurs during validation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">validate</span><span class="o">.</span><span class="n">type_hint_arg</span><span class="p">(</span><span class="n">type_hint</span><span class="p">)</span>
     <span class="n">validate</span><span class="o">.</span><span class="n">depth_arg</span><span class="p">(</span><span class="n">depth</span><span class="p">)</span>
@@ -483,7 +481,7 @@
     <span class="k">if</span> <span class="n">cached_result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># Only cached if Immutable</span>
         <span class="k">if</span> <span class="n">cached_result</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">raise_on_error</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">cached_result</span><span class="p">,</span> <span class="n">IS_IMMUTABLE</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">TypeCheckedTypeError</span><span class="p">(</span>
+        <span class="k">raise</span> <span class="n">TypeCheckError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Object of type &#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39; is not an instance of type hint &#39;</span><span class="si">{</span><span class="n">type_hint</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
             <span class="n">tag</span><span class="o">=</span><span class="n">TypeHintsErrorTag</span><span class="o">.</span><span class="n">TYPE_HINT_MISMATCH</span><span class="p">)</span>
 
@@ -498,7 +496,7 @@
     <span class="n">current_state</span> <span class="o">=</span> <span class="n">ValidationState</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="n">type_hint</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">current_state</span> <span class="ow">in</span> <span class="n">parents</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">raise_on_error</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TypeCheckedTypeError</span><span class="p">(</span>
+            <span class="k">raise</span> <span class="n">TypeCheckError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Cycle detected in object graph for object of type &#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">,</span>
                 <span class="n">tag</span><span class="o">=</span><span class="n">TypeHintsErrorTag</span><span class="o">.</span><span class="n">CYCLIC_REFERENCE_DETECTED</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">NOT_VALID</span><span class="p">,</span> <span class="n">NOT_IMMUTABLE</span><span class="p">)</span>
@@ -509,7 +507,7 @@
     <span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">origin</span><span class="o">.</span><span class="vm">__module__</span> <span class="o">==</span> <span class="s1">&#39;typing&#39;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">origin</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;Final&#39;</span><span class="p">,</span> <span class="s1">&#39;ClassVar&#39;</span><span class="p">,</span> <span class="s1">&#39;Annotated&#39;</span><span class="p">}:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">TypeCheckedValueError</span><span class="p">(</span>
+                <span class="k">raise</span> <span class="n">TypeCheckError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">origin</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> type hint &#39;</span><span class="si">{</span><span class="n">type_hint</span><span class="si">}</span><span class="s2">&#39; has no arguments.&quot;</span><span class="p">,</span>
                     <span class="n">tag</span><span class="o">=</span><span class="n">TypeHintsErrorTag</span><span class="o">.</span><span class="n">INVALID_TYPE_HINT</span><span class="p">)</span>
             <span class="n">type_hint</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -520,7 +518,7 @@
         <span class="n">supertype</span> <span class="o">=</span> <span class="n">type_hint</span><span class="o">.</span><span class="n">__supertype__</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">supertype</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">raise_on_error</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">TypeCheckedTypeError</span><span class="p">(</span>
+                <span class="k">raise</span> <span class="n">TypeCheckError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Object of type &#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39; is not an instance of NewType supertype &#39;</span><span class="si">{</span><span class="n">supertype</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
                     <span class="n">tag</span><span class="o">=</span><span class="n">TypeHintsErrorTag</span><span class="o">.</span><span class="n">TYPE_HINT_MISMATCH</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">NOT_VALID</span><span class="p">,</span> <span class="n">NOT_IMMUTABLE</span><span class="p">)</span>
@@ -548,7 +546,7 @@
 
     <span class="k">if</span> <span class="n">type_hint</span> <span class="ow">in</span> <span class="p">{</span><span class="kc">None</span><span class="p">,</span> <span class="n">NoneType</span><span class="p">}:</span>
         <span class="k">if</span> <span class="n">raise_on_error</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TypeCheckedTypeError</span><span class="p">(</span>
+            <span class="k">raise</span> <span class="n">TypeCheckError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Object of type &#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39; is not None for type hint &#39;</span><span class="si">{</span><span class="n">type_hint</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
                 <span class="n">tag</span><span class="o">=</span><span class="n">TypeHintsErrorTag</span><span class="o">.</span><span class="n">TYPE_HINT_MISMATCH</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">NOT_VALID</span><span class="p">,</span> <span class="n">NOT_IMMUTABLE</span><span class="p">)</span>
@@ -568,7 +566,7 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">type_hint</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">IS_VALID</span><span class="p">,</span> <span class="n">IS_IMMUTABLE</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">raise_on_error</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TypeCheckedTypeError</span><span class="p">(</span>
+            <span class="k">raise</span> <span class="n">TypeCheckError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Object of type &#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39; does not match primitive type hint &#39;</span><span class="si">{</span><span class="n">type_hint</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
                 <span class="n">tag</span><span class="o">=</span><span class="n">TypeHintsErrorTag</span><span class="o">.</span><span class="n">VALIDATION_FAILED</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">NOT_VALID</span><span class="p">,</span> <span class="n">IS_IMMUTABLE</span><span class="p">)</span>
@@ -589,7 +587,7 @@
         <span class="n">_CACHE</span><span class="o">.</span><span class="n">add_cache_entry</span><span class="p">(</span><span class="n">type_hint</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">valid</span><span class="p">,</span> <span class="n">options</span><span class="o">.</span><span class="n">noncachable_types</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">raise_on_error</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">valid</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">TypeCheckedTypeError</span><span class="p">(</span>
+        <span class="k">raise</span> <span class="n">TypeCheckError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Object of type &#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39; is not an instance of type hint &#39;</span><span class="si">{</span><span class="n">type_hint</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
             <span class="n">tag</span><span class="o">=</span><span class="n">TypeHintsErrorTag</span><span class="o">.</span><span class="n">TYPE_HINT_MISMATCH</span><span class="p">)</span>
 
@@ -617,7 +615,7 @@
 <span class="sd">    :return CheckResult: Tuple indicating (is_valid, is_immutable).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># Sanity check for bad calls</span>
-        <span class="k">raise</span> <span class="n">TypeCheckedValueError</span><span class="p">(</span>
+        <span class="k">raise</span> <span class="n">TypeCheckError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Object is not None, got &#39;</span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">,</span>
             <span class="n">tag</span><span class="o">=</span><span class="n">TypeHintsErrorTag</span><span class="o">.</span><span class="n">INVALID_NONE_CHECK</span><span class="p">)</span>
 
@@ -625,7 +623,7 @@
     <span class="k">if</span> <span class="n">cached_result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># Only cached if Immutable</span>
         <span class="k">if</span> <span class="n">cached_result</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">raise_on_error</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">cached_result</span><span class="p">,</span> <span class="n">IS_IMMUTABLE</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">TypeCheckedTypeError</span><span class="p">(</span>
+        <span class="k">raise</span> <span class="n">TypeCheckError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Object of type &#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="si">}</span><span class="s2">&#39; does not match type hint &#39;</span><span class="si">{</span><span class="n">type_hint</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">,</span>
             <span class="n">tag</span><span class="o">=</span><span class="n">TypeHintsErrorTag</span><span class="o">.</span><span class="n">VALIDATION_FAILED</span><span class="p">)</span>
 
@@ -646,7 +644,7 @@
     <span class="n">_CACHE</span><span class="o">.</span><span class="n">add_cache_entry</span><span class="p">(</span><span class="n">type_hint</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">check_result</span><span class="o">.</span><span class="n">immutable</span><span class="p">,</span> <span class="n">options</span><span class="o">.</span><span class="n">noncachable_types</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">raise_on_error</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">TypeCheckedTypeError</span><span class="p">(</span>
+        <span class="k">raise</span> <span class="n">TypeCheckError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Type hint &#39;</span><span class="si">{</span><span class="n">type_hint</span><span class="si">}</span><span class="s2">&#39; does not allow None.&quot;</span><span class="p">,</span>
             <span class="n">tag</span><span class="o">=</span><span class="n">TypeHintsErrorTag</span><span class="o">.</span><span class="n">VALIDATION_FAILED</span><span class="p">)</span>
 
@@ -726,7 +724,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=d86794f8"></script>
+</div><script src="../../_static/documentation_options.js?v=9984e7ab"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>

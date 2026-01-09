@@ -7,7 +7,7 @@ from .._cache import _CACHE
 from .._check_result import CheckResult
 from .._constants import IS_IMMUTABLE, IS_VALID, NOT_IMMUTABLE, NOT_VALID
 from .._error_tags import TypeHintsErrorTag
-from .._exceptions import TypeCheckedTypeError, TypeCheckedValueError
+from .._exceptions import TypeCheckError
 from .._log import log
 from .._options import Options
 from .._validation_state import ValidationState
@@ -35,8 +35,7 @@ def _check_collections_abc_sequence(  # pylint: disable=too-many-return-statemen
     :param set[ValidationState] parents: Set of parent object IDs to detect cycles.
     :param bool raise_on_error: Whether to raise an exception on validation failure.
     :return CheckResult: Tuple indicating (is_valid, is_immutable).
-    :raises TypeCheckedTypeError: If raise_on_error is True and validation fails.
-    :raises TypeCheckedValueError: If origin is not a subclass of Sequence.
+    :raises TypeCheckError: If raise_on_error is True and validation fails.
     """
     from .._typechecked import _check_instance_of_typehint  # pylint: disable=import-outside-toplevel
 
@@ -44,7 +43,7 @@ def _check_collections_abc_sequence(  # pylint: disable=too-many-return-statemen
         "_container_check_sequence: Checking object of type '%s' against Sequence type hint '%s'",
         type(obj).__name__, type_hint)
     if not issubclass(origin, Sequence):
-        raise TypeCheckedValueError(
+        raise TypeCheckError(
             f"Type hint '{type_hint}' is not a Sequence.",
             tag=TypeHintsErrorTag.INVALID_TYPE_HINT)
 
@@ -53,14 +52,14 @@ def _check_collections_abc_sequence(  # pylint: disable=too-many-return-statemen
     if cached_result is not None:  # Only cached if Immutable
         if cached_result or not raise_on_error:
             return CheckResult(cached_result, IS_IMMUTABLE)
-        raise TypeCheckedTypeError(
+        raise TypeCheckError(
             f"Object of type '{type(obj)}' does not match type hint '{type_hint}'.",
             tag=TypeHintsErrorTag.VALIDATION_FAILED)
 
     # Broad check first
     if not isinstance(obj, Sequence):
         if raise_on_error:
-            raise TypeCheckedTypeError(
+            raise TypeCheckError(
                 f"Object of type '{type(obj).__name__}' is not a Sequence, but type hint is '{type_hint}'",
                 tag=TypeHintsErrorTag.VALIDATION_FAILED)
         return CheckResult(NOT_VALID, NOT_IMMUTABLE)
@@ -70,7 +69,7 @@ def _check_collections_abc_sequence(  # pylint: disable=too-many-return-statemen
     if isinstance(obj, (str, bytes)):
         if origin in (list, tuple):
             if raise_on_error:
-                raise TypeCheckedTypeError(
+                raise TypeCheckError(
                     f"Object of type '{type(obj)}' is a primitive str/bytes, "
                     f"not a '{origin.__name__}' Sequence for type hint '{type_hint}'.",
                     tag=TypeHintsErrorTag.VALIDATION_FAILED)
@@ -79,7 +78,7 @@ def _check_collections_abc_sequence(  # pylint: disable=too-many-return-statemen
 
     if not isinstance(obj, origin):
         if raise_on_error:
-            raise TypeCheckedTypeError(
+            raise TypeCheckError(
                 f"Object of type '{type(obj).__name__}' is not an instance of '{origin.__name__}' "
                 f"for type hint '{type_hint}'.",
                 tag=TypeHintsErrorTag.VALIDATION_FAILED)
@@ -94,7 +93,7 @@ def _check_collections_abc_sequence(  # pylint: disable=too-many-return-statemen
             item, item_type_hint, options, new_parents, raise_on_error=False, context="sequence_item")
         if not is_valid:
             if raise_on_error:
-                raise TypeCheckedTypeError(
+                raise TypeCheckError(
                     f"Item '{item}' in Sequence does not match type hint '{item_type_hint}'.",
                     tag=TypeHintsErrorTag.VALIDATION_FAILED)
             return CheckResult(NOT_VALID, NOT_IMMUTABLE)
