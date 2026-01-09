@@ -2,6 +2,11 @@
 TypeChecked Changelog
 =====================
 
+0.11.0 (2026-01-09)
+===================
+
+- Update to 0.11.0
+
 0.10.0-beta (2026-01-09)
 ========================
 - Streamlined the exception handling in type checking functions by replacing
