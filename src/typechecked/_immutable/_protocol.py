@@ -51,64 +51,16 @@ key for `TypedDict`s specifically) to mark a user-defined class as immutable,
 and registers standard Python immutable types (like `int`, `str`)
 so they are automatically recognized.
 """
-import sys
 from abc import ABCMeta
 from enum import Enum
-from typing import Protocol, TypedDict, cast, runtime_checkable
+from typing import Protocol, TypedDict, cast, is_typeddict, runtime_checkable
 
-if sys.version_info >= (3, 11):
-    from typing import NotRequired
-else:
-    try:
-        from typing_extensions import NotRequired
-    except ImportError as e:
-        raise ImportError(
-            "typechecked requires 'typing_extensions' for Python < 3.11 "
-            "to support NotRequired.") from e
-
-if sys.version_info >= (3, 10):
-    from typing import is_typeddict
-else:
-    try:
-        from typing_extensions import is_typeddict
-    except ImportError as e:
-        raise ImportError(
-            "typechecked requires 'typing_extensions' for Python < 3.10 "
-            "to support is_typeddict.") from e
+from .._types import Never, NotRequired
 
 __all__ = (
     "Immutable",
     "ImmutableTypedDict",
 )
-
-
-class ImmutableSentinel:
-    """Sentinel type to indicate immutability in TypedDicts.
-
-    Used as the type for the optional `__immutable__` key in a TypedDict
-    to mark the TypedDict as immutable.
-
-    Example:
-
-    .. code-block:: python
-        from typechecked.types import ImmutableTypedDict
-
-        class Point2D(ImmutableTypedDict):
-            x: float
-            y: float
-
-    The presence of a (NotRequired) `__immutable__` key with this type in the
-    TypedDict definition indicates that the TypedDict is immutable.
-
-    No such key should actually be present in instances of the TypedDict - it is only used
-    for type hinting purposes and the sentinel type cannot be instantiated.
-    """
-    def __init__(self) -> None:
-        """
-        This class is not meant to be instantiated.
-        """
-        raise TypeError("ImmutableSentinel is a sentinel type and cannot be instantiated.")
-
 
 @runtime_checkable
 class Immutable(Protocol):
@@ -236,26 +188,50 @@ class ImmutableTypedDict(TypedDict):
     """TypedDict subclass to mark a TypedDict as immutable.
 
     This class can be used as a base class for user defined TypedDicts
-    to indicate that the TypedDict is immutable.
+    to indicate that the TypedDict is intended to be immutable.
 
     .. note::
         This class does not enforce immutability at runtime and does not modify the
         runtime behavior of the TypedDict. It simply adds a special key `__immutable__`
         to the definition of the TypedDict to serve as a marker for validation purposes.
 
-        Instances are still standard Python `dict` objects by default, so it is the responsibility
-        of the user to ensure they are not modified after creation. This class does not prevent
-        runtime modification; its primary purpose is to help static type checkers and validation
-        tools to detect and flag such misuse.
+        That special key uses the `NotRequired` and `Never` types to indicate that
+        the key should not be provided in instances of the TypedDict.
 
-        The runtime enforcement of immutability is outside the scope of this class, though
-        it can be implemented separately using a wrapper, proxy, or 'mimic' class that
-        structurally matches the TypedDict but is not a regular Python dict if desired.
+        It can be manually added to existing TypedDict definitions to mark them as immutable
+        without needing to inherit from this class directly. Because the key is marked as
+        `NotRequired[Never]`, type checkers will enforce that the key is NOT provided
+        when creating instances. It has to be added to the TypedDict definition itself
+        using a a 'total=False' TypedDict inheritance to avoid making the key required.
 
-        If a TypedDict definition is generated from a `ImmutableTypedDict` and
-        a proxy or wrapper class is created to enforce immutability at runtime,
-        that wrapper class should use the `Immutable` protocol to indicate its immutability
-        rather than inheriting from `ImmutableTypedDict` because it is not a `TypedDict` itself.
+        Example:
+
+        .. code-block:: python
+            from typing import TypedDict
+            
+            class Point2D(TypedDict):
+                x: float
+                y: float
+
+            class ImmutablePoint2D(Point2D, total=False):
+                __immutable__: NotRequired[Never] # Mark as immutable
+
+    If a TypedDict inherits from `ImmutableTypedDict`, typechecked will treat instances
+    of that TypedDict as immutable for 'is_immutable' checks and validation.
+
+    Instances are still standard Python `dict` objects by default, so it is the responsibility
+    of the user to ensure they are not modified after creation. This class does not prevent
+    runtime modification; its primary purpose is to help static type checkers and validation
+    tools to detect and flag such misuse.
+
+    The runtime enforcement of immutability is outside the scope of this class, though
+    it can be implemented separately using a wrapper, proxy, or 'mimic' class that
+    structurally matches the TypedDict but is not a regular Python dict if desired.
+
+    If a TypedDict definition is generated from a `ImmutableTypedDict` and
+    a proxy or wrapper class is created to enforce immutability at runtime,
+    that wrapper class should use the `Immutable` protocol to indicate its immutability
+    rather than inheriting from `ImmutableTypedDict` because it is not a `TypedDict` itself.
 
     It can be checked against the Immutable protocol using issubclass():
 
@@ -275,14 +251,13 @@ class ImmutableTypedDict(TypedDict):
         While the *class* definition is a subclass of `Immutable`, *instances* are standard Python `dict` objects
         at runtime and cannot be distinguished from mutable dictionaries.
     """
-    __immutable__: NotRequired[ImmutableSentinel]
+    __immutable__: NotRequired[Never]
     """Sentinel key to indicate that the TypedDict is immutable.
-    The presence of this key in the TypedDict definition with the type
-    `ImmutableSentinel` indicates immutability.
 
-    The key is NotRequired so it does not need to be present in instances
-    - and in fact should not be present in instances. It is only used for
-    type hinting purposes and the sentinel type cannot be instantiated.
+    The presence of this key in the TypedDict definition with the type
+    indicates immutability. The key is not allowed to actually have a value
+    in instances of the TypedDict. Type checkers will enforce that the key is not
+    provided when creating instances.
     """
 
 

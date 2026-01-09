@@ -1,5 +1,4 @@
 """Helper functions to validate user-defined generic types against type hints."""
-import sys
 from collections.abc import Callable, Collection, Iterable, Mapping, Sequence, Set
 from typing import Any, Protocol
 
@@ -11,27 +10,9 @@ from ._exceptions import TypeCheckedTypeError
 from ._immutable import is_immutable
 from ._log import log
 from ._options import Options
+from ._types import Never, NotRequired, ReadOnly, Required
 from ._validation_state import ValidationState
 
-if sys.version_info >= (3, 11):
-    from typing import Never, NotRequired, Required
-else:
-    try:
-        from typing_extensions import Never, NotRequired, Required
-    except ImportError as e:
-        raise ImportError(
-            "TypeChecked requires 'typing_extensions' for Python < 3.11 "
-            "to support Never, Required, NotRequired, ReadOnly.") from e
-
-if sys.version_info >= (3, 13):
-    from typing import ReadOnly
-else:
-    try:
-        from typing_extensions import ReadOnly
-    except ImportError as e:
-        raise ImportError(
-            "TypeChecked requires 'typing_extensions' for Python < 3.13 "
-            "to support ReadOnly.") from e
 __all__ = (
     "_check_generic",
 )
