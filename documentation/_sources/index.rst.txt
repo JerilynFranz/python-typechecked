@@ -7,8 +7,8 @@ A comprehensive runtime type hint checker for use with Python 3.10 and above.
 This library provides pure-Python functions and base classes to check type hints at runtime,
 helping to catch type-related errors during data processing and manipulation.
 
-It is not intended to be used for validating function parameters in production code.
-It can be used for that purpose, but it is not optimized for performance in that scenario.
+It is not intended to be used for validating function calls in production code.
+It can be used for that, but it is not optimized for performance in that scenario.
 
 Other tools such as `typeguard <https://typeguard.readthedocs.io/en/latest/>`_ and
 `beartype <https://beartype.readthedocs.io/en/latest/>`_ are much better suited for
@@ -22,7 +22,7 @@ such as during data ingestion, transformation, or serialization/deserialization.
 It supports checking of standard type hints as defined in PEP 484, PEP 585, PEP 586,
 PEP 589, PEP 591, PEP 593, and PEP 604 among others, as well as more complex
 type constructs such as nested generics, unions, literals, typed dictionaries,
-and recursive types. These are support for both built-in and user-defined classes
+and recursive types. These are supported for both built-in and user-defined classes
 and dataclasses.
 
 Supported Typing Constructs

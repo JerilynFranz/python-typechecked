@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>typechecked._immutable._protocol - TypeChecked 0.8.0-beta.1 documentation</title>
+        <title>typechecked._immutable._protocol - TypeChecked 0.9.0-beta documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=c309799c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=d998a142" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">TypeChecked 0.8.0-beta.1 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">TypeChecked 0.9.0-beta documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
-  <span class="sidebar-brand-text">TypeChecked 0.8.0-beta.1 documentation</span>
+  <span class="sidebar-brand-text">TypeChecked 0.9.0-beta documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -192,12 +192,9 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+  <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../source/modules.html">src</a><input aria-label="Toggle navigation of src" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../source/typechecked.html">typechecked package</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../genindex.html">Index</a></li>
 </ul>
 
 </div>
@@ -284,64 +281,16 @@
 <span class="sd">and registers standard Python immutable types (like `int`, `str`)</span>
 <span class="sd">so they are automatically recognized.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABCMeta</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">TypedDict</span><span class="p">,</span> <span class="n">cast</span><span class="p">,</span> <span class="n">runtime_checkable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">TypedDict</span><span class="p">,</span> <span class="n">cast</span><span class="p">,</span> <span class="n">is_typeddict</span><span class="p">,</span> <span class="n">runtime_checkable</span>
 
-<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">11</span><span class="p">):</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NotRequired</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">NotRequired</span>
-    <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-            <span class="s2">&quot;typechecked requires &#39;typing_extensions&#39; for Python &lt; 3.11 &quot;</span>
-            <span class="s2">&quot;to support NotRequired.&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
-
-<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_typeddict</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_typeddict</span>
-    <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-            <span class="s2">&quot;typechecked requires &#39;typing_extensions&#39; for Python &lt; 3.10 &quot;</span>
-            <span class="s2">&quot;to support is_typeddict.&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.._types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Never</span><span class="p">,</span> <span class="n">NotRequired</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
     <span class="s2">&quot;Immutable&quot;</span><span class="p">,</span>
     <span class="s2">&quot;ImmutableTypedDict&quot;</span><span class="p">,</span>
 <span class="p">)</span>
-
-
-<span class="k">class</span><span class="w"> </span><span class="nc">ImmutableSentinel</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sentinel type to indicate immutability in TypedDicts.</span>
-
-<span class="sd">    Used as the type for the optional `__immutable__` key in a TypedDict</span>
-<span class="sd">    to mark the TypedDict as immutable.</span>
-
-<span class="sd">    Example:</span>
-
-<span class="sd">    .. code-block:: python</span>
-<span class="sd">        from typechecked.types import ImmutableTypedDict</span>
-
-<span class="sd">        class Point2D(ImmutableTypedDict):</span>
-<span class="sd">            x: float</span>
-<span class="sd">            y: float</span>
-
-<span class="sd">    The presence of a (NotRequired) `__immutable__` key with this type in the</span>
-<span class="sd">    TypedDict definition indicates that the TypedDict is immutable.</span>
-
-<span class="sd">    No such key should actually be present in instances of the TypedDict - it is only used</span>
-<span class="sd">    for type hinting purposes and the sentinel type cannot be instantiated.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        This class is not meant to be instantiated.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;ImmutableSentinel is a sentinel type and cannot be instantiated.&quot;</span><span class="p">)</span>
-
 
 <div class="viewcode-block" id="Immutable">
 <a class="viewcode-back" href="../../../source/typechecked.html#typechecked.Immutable">[docs]</a>
@@ -474,26 +423,50 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;TypedDict subclass to mark a TypedDict as immutable.</span>
 
 <span class="sd">    This class can be used as a base class for user defined TypedDicts</span>
-<span class="sd">    to indicate that the TypedDict is immutable.</span>
+<span class="sd">    to indicate that the TypedDict is intended to be immutable.</span>
 
 <span class="sd">    .. note::</span>
 <span class="sd">        This class does not enforce immutability at runtime and does not modify the</span>
 <span class="sd">        runtime behavior of the TypedDict. It simply adds a special key `__immutable__`</span>
 <span class="sd">        to the definition of the TypedDict to serve as a marker for validation purposes.</span>
 
-<span class="sd">        Instances are still standard Python `dict` objects by default, so it is the responsibility</span>
-<span class="sd">        of the user to ensure they are not modified after creation. This class does not prevent</span>
-<span class="sd">        runtime modification; its primary purpose is to help static type checkers and validation</span>
-<span class="sd">        tools to detect and flag such misuse.</span>
+<span class="sd">        That special key uses the `NotRequired` and `Never` types to indicate that</span>
+<span class="sd">        the key should not be provided in instances of the TypedDict.</span>
 
-<span class="sd">        The runtime enforcement of immutability is outside the scope of this class, though</span>
-<span class="sd">        it can be implemented separately using a wrapper, proxy, or &#39;mimic&#39; class that</span>
-<span class="sd">        structurally matches the TypedDict but is not a regular Python dict if desired.</span>
+<span class="sd">        It can be manually added to existing TypedDict definitions to mark them as immutable</span>
+<span class="sd">        without needing to inherit from this class directly. Because the key is marked as</span>
+<span class="sd">        `NotRequired[Never]`, type checkers will enforce that the key is NOT provided</span>
+<span class="sd">        when creating instances. It has to be added to the TypedDict definition itself</span>
+<span class="sd">        using a a &#39;total=False&#39; TypedDict inheritance to avoid making the key required.</span>
 
-<span class="sd">        If a TypedDict definition is generated from a `ImmutableTypedDict` and</span>
-<span class="sd">        a proxy or wrapper class is created to enforce immutability at runtime,</span>
-<span class="sd">        that wrapper class should use the `Immutable` protocol to indicate its immutability</span>
-<span class="sd">        rather than inheriting from `ImmutableTypedDict` because it is not a `TypedDict` itself.</span>
+<span class="sd">        Example:</span>
+
+<span class="sd">        .. code-block:: python</span>
+<span class="sd">            from typing import TypedDict</span>
+<span class="sd">            </span>
+<span class="sd">            class Point2D(TypedDict):</span>
+<span class="sd">                x: float</span>
+<span class="sd">                y: float</span>
+
+<span class="sd">            class ImmutablePoint2D(Point2D, total=False):</span>
+<span class="sd">                __immutable__: NotRequired[Never] # Mark as immutable</span>
+
+<span class="sd">    If a TypedDict inherits from `ImmutableTypedDict`, typechecked will treat instances</span>
+<span class="sd">    of that TypedDict as immutable for &#39;is_immutable&#39; checks and validation.</span>
+
+<span class="sd">    Instances are still standard Python `dict` objects by default, so it is the responsibility</span>
+<span class="sd">    of the user to ensure they are not modified after creation. This class does not prevent</span>
+<span class="sd">    runtime modification; its primary purpose is to help static type checkers and validation</span>
+<span class="sd">    tools to detect and flag such misuse.</span>
+
+<span class="sd">    The runtime enforcement of immutability is outside the scope of this class, though</span>
+<span class="sd">    it can be implemented separately using a wrapper, proxy, or &#39;mimic&#39; class that</span>
+<span class="sd">    structurally matches the TypedDict but is not a regular Python dict if desired.</span>
+
+<span class="sd">    If a TypedDict definition is generated from a `ImmutableTypedDict` and</span>
+<span class="sd">    a proxy or wrapper class is created to enforce immutability at runtime,</span>
+<span class="sd">    that wrapper class should use the `Immutable` protocol to indicate its immutability</span>
+<span class="sd">    rather than inheriting from `ImmutableTypedDict` because it is not a `TypedDict` itself.</span>
 
 <span class="sd">    It can be checked against the Immutable protocol using issubclass():</span>
 
@@ -513,14 +486,13 @@
 <span class="sd">        While the *class* definition is a subclass of `Immutable`, *instances* are standard Python `dict` objects</span>
 <span class="sd">        at runtime and cannot be distinguished from mutable dictionaries.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">__immutable__</span><span class="p">:</span> <span class="n">NotRequired</span><span class="p">[</span><span class="n">ImmutableSentinel</span><span class="p">]</span>
+    <span class="n">__immutable__</span><span class="p">:</span> <span class="n">NotRequired</span><span class="p">[</span><span class="n">Never</span><span class="p">]</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sentinel key to indicate that the TypedDict is immutable.</span>
-<span class="sd">    The presence of this key in the TypedDict definition with the type</span>
-<span class="sd">    `ImmutableSentinel` indicates immutability.</span>
 
-<span class="sd">    The key is NotRequired so it does not need to be present in instances</span>
-<span class="sd">    - and in fact should not be present in instances. It is only used for</span>
-<span class="sd">    type hinting purposes and the sentinel type cannot be instantiated.</span>
+<span class="sd">    The presence of this key in the TypedDict definition with the type</span>
+<span class="sd">    indicates immutability. The key is not allowed to actually have a value</span>
+<span class="sd">    in instances of the TypedDict. Type checkers will enforce that the key is not</span>
+<span class="sd">    provided when creating instances.</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
 
 
@@ -560,7 +532,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=d86794f8"></script>
+</div><script src="../../../_static/documentation_options.js?v=9984e7ab"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

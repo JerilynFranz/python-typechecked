@@ -3,10 +3,10 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="prev" title="src" href="modules.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>typechecked package - TypeChecked 0.8.0-beta.1 documentation</title>
+        <title>typechecked package - TypeChecked 0.9.0-beta documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=c309799c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=d998a142" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -164,7 +164,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">TypeChecked 0.8.0-beta.1 documentation</div></a>
+      <a href="../index.html"><div class="brand">TypeChecked 0.9.0-beta documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -185,7 +185,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">TypeChecked 0.8.0-beta.1 documentation</span>
+  <span class="sidebar-brand-text">TypeChecked 0.9.0-beta documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -193,12 +193,9 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1 current has-children"><a class="reference internal" href="modules.html">src</a><input aria-label="Toggle navigation of src" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">typechecked package</a></li>
-</ul>
-</li>
+  <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
 </ul>
 
 </div>
@@ -347,12 +344,23 @@ even though they do not explicitly inherit from the Immutable protocol.</p>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypedDict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></a></p>
 <p>TypedDict subclass to mark a TypedDict as immutable.</p>
 <p>This class can be used as a base class for user defined TypedDicts
-to indicate that the TypedDict is immutable.</p>
+to indicate that the TypedDict is intended to be immutable.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This class does not enforce immutability at runtime and does not modify the
 runtime behavior of the TypedDict. It simply adds a special key <cite>__immutable__</cite>
 to the definition of the TypedDict to serve as a marker for validation purposes.</p>
+<p>That special key uses the <cite>NotRequired</cite> and <cite>Never</cite> types to indicate that
+the key should not be provided in instances of the TypedDict.</p>
+<p>It can be manually added to existing TypedDict definitions to mark them as immutable
+without needing to inherit from this class directly. Because the key is marked as
+<cite>NotRequired[Never]</cite>, type checkers will enforce that the key is NOT provided
+when creating instances. It has to be added to the TypedDict definition itself
+using a a ‘total=False’ TypedDict inheritance to avoid making the key required.</p>
+<p>Example:</p>
+</div>
+<p>If a TypedDict inherits from <cite>ImmutableTypedDict</cite>, typechecked will treat instances
+of that TypedDict as immutable for ‘is_immutable’ checks and validation.</p>
 <p>Instances are still standard Python <cite>dict</cite> objects by default, so it is the responsibility
 of the user to ensure they are not modified after creation. This class does not prevent
 runtime modification; its primary purpose is to help static type checkers and validation
@@ -364,7 +372,6 @@ structurally matches the TypedDict but is not a regular Python dict if desired.<
 a proxy or wrapper class is created to enforce immutability at runtime,
 that wrapper class should use the <cite>Immutable</cite> protocol to indicate its immutability
 rather than inheriting from <cite>ImmutableTypedDict</cite> because it is not a <cite>TypedDict</cite> itself.</p>
-</div>
 <p>It can be checked against the Immutable protocol using issubclass():</p>
 <p>Example:</p>
 <div class="admonition note">
@@ -740,17 +747,7 @@ will always be treated as non-cachable.</p></li>
         
         <div class="related-pages">
           
-          <a class="prev-page" href="modules.html">
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-              <div class="page-info">
-                <div class="context">
-                  <span>Previous</span>
-                </div>
-                
-                <div class="title">src</div>
-                
-              </div>
-            </a>
+          
         </div>
         <div class="bottom-of-page">
           <div class="left-details">
@@ -805,7 +802,7 @@ will always be treated as non-cachable.</p></li>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=d86794f8"></script>
+</div><script src="../_static/documentation_options.js?v=9984e7ab"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
